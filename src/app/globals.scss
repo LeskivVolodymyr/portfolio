@@ -1,0 +1,33 @@
+@use 'src/app/_styles/utils/colors' as colors;
+@use 'src/app/_styles/utils/fonts' as fonts;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/*@media (prefers-color-scheme: dark) {*/
+/*  :root {*/
+/*    --background: #0a0a0a;*/
+/*    --foreground: #ededed;*/
+/*  }*/
+/*}*/
+
+body {
+  background-color: colors.$background;
+  color: colors.$font-color;
+  font-size: 18px; //TODO: to rem
+  font-family: fonts.$font-manrope;
+
+  /*color: var(--foreground);*/
+  /*background: var(--background);*/
+  /*font-family: Arial, Helvetica, sans-serif;*/
+}
+main {
+  max-width: 1920px; // TODO: to rem
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: fonts.$font-bebas-neue;
+  line-height: 1;
+}
