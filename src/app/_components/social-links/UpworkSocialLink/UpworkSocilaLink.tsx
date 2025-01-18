@@ -1,4 +1,4 @@
-import SocialLink from "@/app/_components/SocialLink/SocialLink";
+import SocialLink from '@/app/_components/SocialLink/SocialLink';
 import { useState } from 'react';
 import UpworkIcon from '@/app/_components/icons/UpworkIcon/UpworkIcon';
 
@@ -8,12 +8,17 @@ export interface IUpworkSocialLinkProps {
     iconHoverColor: string;
 }
 
-export default function UpworkSocialLink({ href, iconColor, iconHoverColor}: IUpworkSocialLinkProps) {
+export default function UpworkSocialLink({
+    href,
+    iconColor,
+    iconHoverColor,
+}: IUpworkSocialLinkProps) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
     return (
         <div
             onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}>
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <SocialLink href={href}>
                 <UpworkIcon color={isHovered ? iconHoverColor : iconColor} />
             </SocialLink>

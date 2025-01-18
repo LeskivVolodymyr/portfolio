@@ -7,28 +7,33 @@
 
 /* Light theme variables */
 :root {
-  --font-color: #{colors.$font-color-light};
-  --interactive-element-color: #{colors.$interactive-element-color-light};
-  --background-color: #{colors.$background-color-light};
+    --font-color: #{colors.$font-color-light};
+    --interactive-element-color: #{colors.$interactive-element-color-light};
+    --background-color: #{colors.$background-color-light};
 }
 
 /* Dark theme variables */
 .dark {
-  --font-color: #{colors.$font-color-dark};
-  --interactive-element-color: #{colors.$interactive-element-color-dark};
-  --background-color: #{colors.$background-color-dark};
+    --font-color: #{colors.$font-color-dark};
+    --interactive-element-color: #{colors.$interactive-element-color-dark};
+    --background-color: #{colors.$background-color-dark};
 }
 body {
-  background-color: var(--background-color);
-  color: var(--font-color);
-  font-size: 18px; //TODO: to rem
-  font-family: fonts.$font-manrope;
+    background-color: var(--background-color);
+    color: var(--font-color);
+    font-size: 18px; //TODO: to rem
+    font-family: fonts.$font-manrope;
 }
 main {
-  max-width: 1920px; // TODO: to rem
+    max-width: 1920px; // TODO: to rem
 }
 
-h1,h2,h3,h4,h5,h6 {
-  font-family: fonts.$font-bebas-neue;
-  line-height: 1;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: fonts.$font-bebas-neue;
+    line-height: 1;
 }

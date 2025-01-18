@@ -1,37 +1,37 @@
-.link{
-  position: relative;
+.link {
+    position: relative;
 }
 
 .primary {
-  background-color: transparent;
-  color: var(--font-color);
+    background-color: transparent;
+    color: var(--font-color);
 
-  transition: all .3s;
-  z-index: 1;
-  overflow: hidden;
-  box-shadow: inset 0 0 0 2px var(--font-color);
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--interactive-element-color);
-    transition: all .3s;
-    border-radius: 9999px; // Match the rounded-full class from Tailwind CSS
-    z-index: -1;
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-
-  &:hover {
-    color: var(--background-color);
-    box-shadow: inset 0 0 0 2px var(--interactive-element-color);
+    transition: all 0.3s;
+    z-index: 1;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 2px var(--font-color);
 
     &:before {
-      transform: scaleX(1);
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--interactive-element-color);
+        transition: all 0.3s;
+        border-radius: 9999px; // Match the rounded-full class from Tailwind CSS
+        z-index: -1;
+        transform: scaleX(0);
+        transform-origin: left;
     }
-  }
+
+    &:hover {
+        color: var(--background-color);
+        box-shadow: inset 0 0 0 2px var(--interactive-element-color);
+
+        &:before {
+            transform: scaleX(1);
+        }
+    }
 }

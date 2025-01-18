@@ -10,7 +10,6 @@ export default function ThemeSwitch() {
         if (theme === 'dark') {
             document.documentElement.classList.remove('dark');
             setTheme('light');
-
         } else {
             document.documentElement.classList.add('dark');
             setTheme('dark');

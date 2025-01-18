@@ -7,7 +7,10 @@ export interface IContactMeButtonProps {
     iconHoverColor: string;
 }
 
-export default function ContactMeButton( { iconColor, iconHoverColor }: IContactMeButtonProps) {
+export default function ContactMeButton({
+    iconColor,
+    iconHoverColor,
+}: IContactMeButtonProps) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
     return (
@@ -15,15 +18,12 @@ export default function ContactMeButton( { iconColor, iconHoverColor }: IContact
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <span className="flex">
+            <span className='flex'>
                 CONTACT ME
-                <span className="flex items-center pl-6">
-                    <DotIcon color={isHovered ? iconHoverColor : iconColor}/>
+                <span className='flex items-center pl-6'>
+                    <DotIcon color={isHovered ? iconHoverColor : iconColor} />
                 </span>
             </span>
         </Button>
     );
 }
-
-
-

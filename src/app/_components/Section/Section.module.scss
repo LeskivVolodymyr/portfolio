@@ -1,16 +1,20 @@
-.wrapper{
- max-width: 100%;
- overflow: visible;
+.wrapper {
+    max-width: 100%;
+    overflow: visible;
 }
 
-.separator{
- height: 1px;
- width: 100vw;
- margin-left: -50vw;
- left: 50%;
- position: relative;
- background: linear-gradient(to right, transparent 0%, #F8F8F2 45%, #F8F8F2 55%, transparent 100%);
- animation: expandLine 1s ease-out forwards;
+.separator {
+    height: 1px;
+    width: 100vw;
+    margin-left: -50vw;
+    left: 50%;
+    position: relative;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        #f8f8f2 45%,
+        #f8f8f2 55%,
+        transparent 100%
+    );
+    animation: expandLine 1s ease-out forwards;
 }
-
-

@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement } from 'react';
 import styles from './Button.module.scss';
 
 export interface IButtonProps {
@@ -7,7 +7,11 @@ export interface IButtonProps {
     onMouseLeave?: () => void;
 }
 
-export default function Button({ children, onMouseEnter, onMouseLeave }: IButtonProps) {
+export default function Button({
+    children,
+    onMouseEnter,
+    onMouseLeave,
+}: IButtonProps) {
     const buttonClasses = `text-base font-bold px-5 py-4 rounded-full ${styles.button}`;
 
     return (
