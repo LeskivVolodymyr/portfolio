@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import bob from "../../../../../public/images/random-dude.png";
-import HomeButtons from '@/app/_components/HomeButtons/HomeButtons';
+import HomeContacts from '@/app/_components/HomeContacts/HomeContacts';
 
 export default function HomeSection() {
     return (
@@ -10,7 +10,7 @@ export default function HomeSection() {
                 <div className='pb-10'>
                     <span>A senior full-stack developer.</span>
                 </div>
-              <HomeButtons/>
+              <HomeContacts/>
             </div>
             <div className="flex-1">
                 <Image

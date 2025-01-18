@@ -1,21 +1,21 @@
-import LinkedInIcon from "@/app/_components/icons/LinkedInIcon/LinkedInIcon";
 import SocialLink from "@/app/_components/SocialLink/SocialLink";
 import { useState } from 'react';
+import GitHubIcon from '@/app/_components/icons/GitHubIcon/GitHubIcon';
 
-export interface ILinkedInSocialLinkProps {
+export interface IGitHubSocialLinkProps {
     href: string;
     iconColor: string;
     iconHoverColor: string;
 }
 
-export default function LinkedInSocialLink({ href, iconColor, iconHoverColor}: ILinkedInSocialLinkProps) {
+export default function GitHubSocialLink({ href, iconColor, iconHoverColor}: IGitHubSocialLinkProps) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
     return (
         <div
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
             <SocialLink href={href}>
-                <LinkedInIcon color={isHovered ? iconHoverColor : iconColor} />
+                <GitHubIcon color={isHovered ? iconHoverColor : iconColor} />
             </SocialLink>
         </div>
     );

@@ -1,8 +1,8 @@
 import {IIconProps} from "@/app/_components/icons/icon-props";
 
-interface LinkedInIconProps extends IIconProps {}
+interface ILinkedInIconProps extends IIconProps {}
 
-export default function LinkedInIcon({ color = '#000' }: LinkedInIconProps) {
+export default function LinkedInIcon({ color = '#000' }: ILinkedInIconProps) {
     return (
         <svg width="24" height="24" viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
             <path d="M5.39825 7.79682C6.70735 7.79682 7.76858 6.73558 7.76858 5.42649C7.76858 4.11739 6.70735 3.05615 5.39825 3.05615C4.08915 3.05615 3.02792 4.11739 3.02792 5.42649C3.02792 6.73558 4.08915 7.79682 5.39825 7.79682Z" fill={color}/>
