@@ -1,4 +1,3 @@
-import Header from "@/app/_componets/Header/Header";
 import Section from "@/app/_componets/Section/Section";
 import LetsConnectSection from "@/app/_componets/sections/LetsConnectSection/LetsConnectSection";
 import HomeSection from "@/app/_componets/sections/HomeSection/HomeSection";
