@@ -1,16 +1,15 @@
-'use client'
+'use client';
 
 import Image from 'next/image'
 import bob from "../../../../../public/images/random-dude.png";
-import Button, {ButtonType} from "@/app/_componets/Buton/Button";
-import DotIcon from "@/app/_componets/icons/DotIcon/DotIcon";
-import LinkedInIcon from "@/app/_componets/icons/LinkedInIcon/LinkedInIcon";
-import {useState} from "react";
-import SocialLink from "@/app/_componets/SocialLink/SocialLink";
 import LinkedInSocialLink from "@/app/_componets/social-links/LinkedInSocialLink/LinkedInSocialLink";
+import dynamic from 'next/dynamic';
+
+const ContactMeButton = dynamic(() => import('@/app/_componets/ContactMeButton/ContactMeButton'), {
+    ssr: false
+});
 
 export default function HomeSection() {
-    const [buttonsColor, setButtonsColor] = useState('#F8F8F2');
     return (
          <div className="flex flex-col place-content-center flex-wrap  md:flex-row">
             <div className="flex flex-col self-center flex-1">
@@ -19,18 +18,8 @@ export default function HomeSection() {
                     <span>A senior full-stack developer.</span>
                 </div>
                 <div className='flex gap-4'>
-                    <Button
-                        onMouseEnter={() => setButtonsColor('#282A36')}
-                        onMouseLeave={() => setButtonsColor('#F8F8F2')}
-                    >
-                        <span className="flex">
-                            CONTACT ME
-                            <span className="flex items-center pl-6">
-                                <DotIcon color={buttonsColor}/>
-                            </span>
-                        </span>
-                    </Button>
-                    <LinkedInSocialLink/>
+                    <ContactMeButton/>
+                    <LinkedInSocialLink href='https://google.com'/>
                 </div>
             </div>
             <div className="flex-1">

@@ -5,23 +5,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light theme variables */
+:root {
+  --font-color: #{colors.$font-color-light};
+  --interactive-element-color: #{colors.$interactive-element-color-light};
+  --background-color: #{colors.$background-color-light};
+}
 
-/*@media (prefers-color-scheme: dark) {*/
-/*  :root {*/
-/*    --background: #0a0a0a;*/
-/*    --foreground: #ededed;*/
-/*  }*/
-/*}*/
-
+/* Dark theme variables */
+.dark {
+  --font-color: #{colors.$font-color-dark};
+  --interactive-element-color: #{colors.$interactive-element-color-dark};
+  --background-color: #{colors.$background-color-dark};
+}
 body {
-  background-color: colors.$background;
-  color: colors.$font-color;
+  background-color: var(--background-color);
+  color: var(--font-color);
   font-size: 18px; //TODO: to rem
   font-family: fonts.$font-manrope;
-
-  /*color: var(--foreground);*/
-  /*background: var(--background);*/
-  /*font-family: Arial, Helvetica, sans-serif;*/
 }
 main {
   max-width: 1920px; // TODO: to rem

@@ -1,11 +1,25 @@
+// dark mode colors
 $green:#50FA7B;
 $dark-grayish-blue: #282A36;
 $grayish-white: #F8F8F2;
+// ??
 $gray: #44475A;
 
-$background:  $dark-grayish-blue;
-$background-2:  $gray;
+// light mode colors
+$black: #333333;
+$white: #FFFFFF;
+$blue: #007BFF;
 
-$font-color:  $grayish-white;
-$font-color-for-lite-background: $dark-grayish-blue;
-$interactive-element-color: $green;
+
+//$background-2:  $gray;
+
+//  Dark mode
+$font-color-dark:  $grayish-white;
+//$font-color-for-lite-background: $dark-grayish-blue;
+$interactive-element-color-dark: $green;
+$background-color-dark: $dark-grayish-blue;
+
+//  Light mode
+$font-color-light:  $black;
+$interactive-element-color-light: $blue;
+$background-color-light:  $white;
