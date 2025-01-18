@@ -1,6 +1,6 @@
 import styles from './Button.module.scss';
-import LinkedInIcon from "@/app/_componets/icons/LinkedInIcon/LinkedInIcon";
-import SocialLink from "@/app/_componets/SocialLink/SocialLink";
+import LinkedInIcon from "@/app/_components/icons/LinkedInIcon/LinkedInIcon";
+import SocialLink from "@/app/_components/SocialLink/SocialLink";
 
 export interface IButtonProps {
     href: string;

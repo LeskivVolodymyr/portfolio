@@ -1,13 +1,6 @@
-'use client';
-
 import Image from 'next/image'
 import bob from "../../../../../public/images/random-dude.png";
-import LinkedInSocialLink from "@/app/_componets/social-links/LinkedInSocialLink/LinkedInSocialLink";
-import dynamic from 'next/dynamic';
-
-const ContactMeButton = dynamic(() => import('@/app/_componets/ContactMeButton/ContactMeButton'), {
-    ssr: false
-});
+import HomeButtons from '@/app/_components/HomeButtons/HomeButtons';
 
 export default function HomeSection() {
     return (
@@ -17,10 +10,7 @@ export default function HomeSection() {
                 <div className='pb-10'>
                     <span>A senior full-stack developer.</span>
                 </div>
-                <div className='flex gap-4'>
-                    <ContactMeButton/>
-                    <LinkedInSocialLink href='https://google.com'/>
-                </div>
+              <HomeButtons/>
             </div>
             <div className="flex-1">
                 <Image

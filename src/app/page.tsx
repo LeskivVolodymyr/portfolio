@@ -1,6 +1,6 @@
-import Section from "@/app/_componets/Section/Section";
-import LetsConnectSection from "@/app/_componets/sections/LetsConnectSection/LetsConnectSection";
-import HomeSection from "@/app/_componets/sections/HomeSection/HomeSection";
+import Section from "@/app/_components/Section/Section";
+import LetsConnectSection from "@/app/_components/sections/LetsConnectSection/LetsConnectSection";
+import HomeSection from "@/app/_components/sections/HomeSection/HomeSection";
 
 export default function Home() {
   return (

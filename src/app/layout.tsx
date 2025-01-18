@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.scss";
-import Header from "@/app/_componets/Header/Header";
-import ThemeSwitch from '@/app/_componets/ThemeSwitch/ThemeSwitch';
+import Header from "@/app/_components/Header/Header";
+import ThemeSwitch from '@/app/_components/ThemeSwitch/ThemeSwitch';
 import { ThemeProvider } from '@/app/context/ThemeContext';
 
 export const metadata: Metadata = {

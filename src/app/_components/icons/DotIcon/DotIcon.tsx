@@ -1,4 +1,4 @@
-import {IIconProps} from "@/app/_componets/icons/icon-props";
+import {IIconProps} from "@/app/_components/icons/icon-props";
 
 interface IDotIconProps extends IIconProps {}
 
