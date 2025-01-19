@@ -16,17 +16,24 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-    const [theme, setTheme] = useState('light');
+    const [theme, setTheme] = useState('dark');
 
     useEffect(() => {
         const storedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia(
+            '(prefers-color-scheme: dark)'
+        ).matches;
 
-        if (!storedTheme) return;
-
-        setTheme(storedTheme);
-
-        if (storedTheme === 'dark')
-            document.documentElement.classList.add('dark');
+        if (storedTheme) {
+            setTheme(storedTheme);
+            if (storedTheme === 'light')
+                document.documentElement.classList.add('light');
+        } else if (systemPrefersDark) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+            document.documentElement.classList.add('light');
+        }
     }, []);
 
     useEffect(() => {

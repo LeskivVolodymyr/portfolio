@@ -7,18 +7,18 @@ export default function ThemeSwitch() {
     const { theme, setTheme } = useTheme();
 
     const toggleTheme = () => {
-        if (theme === 'dark') {
-            document.documentElement.classList.remove('dark');
-            setTheme('light');
-        } else {
-            document.documentElement.classList.add('dark');
+        if (theme === 'light') {
+            document.documentElement.classList.remove('light');
             setTheme('dark');
+        } else {
+            document.documentElement.classList.add('light');
+            setTheme('light');
         }
     };
 
     return (
         <button onClick={toggleTheme}>
-            {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
         </button>
     );
 }
