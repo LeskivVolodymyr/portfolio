@@ -6,12 +6,14 @@ export interface ILinkedInSocialLinkProps {
     href: string;
     iconColor: string;
     iconHoverColor: string;
+    isBordered?: boolean;
 }
 
 export default function LinkedInSocialLink({
     href,
     iconColor,
     iconHoverColor,
+    isBordered,
 }: ILinkedInSocialLinkProps) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
@@ -20,7 +22,11 @@ export default function LinkedInSocialLink({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <SocialLink href={href} title='View my LinedIn profile'>
+            <SocialLink
+                href={href}
+                title='View my LinedIn profile'
+                isBordered={isBordered}
+            >
                 <LinkedInIcon color={isHovered ? iconHoverColor : iconColor} />
             </SocialLink>
         </div>

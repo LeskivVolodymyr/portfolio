@@ -6,12 +6,14 @@ export interface IGitHubSocialLinkProps {
     href: string;
     iconColor: string;
     iconHoverColor: string;
+    isBordered?: boolean;
 }
 
 export default function GitHubSocialLink({
     href,
     iconColor,
     iconHoverColor,
+    isBordered,
 }: IGitHubSocialLinkProps) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
@@ -20,7 +22,11 @@ export default function GitHubSocialLink({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <SocialLink href={href} title='View my GitHub profile'>
+            <SocialLink
+                href={href}
+                title='View my GitHub profile'
+                isBordered={isBordered}
+            >
                 <GitHubIcon color={isHovered ? iconHoverColor : iconColor} />
             </SocialLink>
         </div>

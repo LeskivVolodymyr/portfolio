@@ -10,35 +10,55 @@ import UpworkSocialLink, {
     IUpworkSocialLinkProps,
 } from '@/app/_components/social-links/UpworkSocialLink/UpworkSocilaLink';
 import { useIconColors } from '@/app/_hooks/useIconColors';
+import styles from './LetsConnectSection.module.scss';
 
 export default function LetsConnectSection() {
-    const { iconColor, iconHoverColor } = useIconColors();
+    const { iconInteractiveColor } = useIconColors();
 
     const linkedInSocialLinkProps: ILinkedInSocialLinkProps = {
         href: 'https://www.linkedin.com/in/leskiv-v-d/', // TODO: Move to config
-        iconColor,
-        iconHoverColor,
+        iconColor: iconInteractiveColor,
+        iconHoverColor: iconInteractiveColor,
+        isBordered: false,
     };
 
     const gitHubSocialLinkProps: IGitHubSocialLinkProps = {
         href: 'https://github.com/LeskivVolodymyr/', // TODO: Move to config
-        iconColor,
-        iconHoverColor,
+        iconColor: iconInteractiveColor,
+        iconHoverColor: iconInteractiveColor,
+        isBordered: false,
     };
 
     const upworkSocialLinkProps: IUpworkSocialLinkProps = {
         href: 'https://www.upwork.com/freelancers/volodymyrleskiv', // TODO: Move to config
-        iconColor,
-        iconHoverColor,
+        iconColor: iconInteractiveColor,
+        iconHoverColor: iconInteractiveColor,
+        isBordered: false,
     };
 
     return (
         <div className='flex flex-col place-content-center flex-wrap  md:flex-row'>
             <div className='flex flex-col self-center flex-1'>
-                <h2 className='text-6xl'>LET’S CONNECT</h2>
-                <div className='pb-10 flex flex-col'>
-                    <span>Say Hello at leskiv.v.d@gmail.com</span>
-                    <span>For more info, here is my resume</span>
+                <h2 className='text-6xl mb-2'>LET’S CONNECT</h2>
+                <div className='mb-5 flex flex-col'>
+                    <div>
+                        Say hello at&nbsp;
+                        <a
+                            href='mailto:leskiv.v.d@gmail.com'
+                            className={`${styles.email} underline underline-offset-4`}
+                        >
+                            <strong>leskiv.v.d@gmail.com</strong>
+                        </a>
+                    </div>
+                    <div>
+                        For more info, here is my&nbsp;
+                        <a
+                            href='/not-implemented'
+                            className={`${styles.resume} underline underline-offset-4`}
+                        >
+                            <strong>resume</strong>
+                        </a>
+                    </div>
                 </div>
                 <div className='flex gap-4'>
                     <LinkedInSocialLink {...linkedInSocialLinkProps} />

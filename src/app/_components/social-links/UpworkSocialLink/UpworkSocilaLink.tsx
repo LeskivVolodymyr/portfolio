@@ -6,12 +6,14 @@ export interface IUpworkSocialLinkProps {
     href: string;
     iconColor: string;
     iconHoverColor: string;
+    isBordered?: boolean;
 }
 
 export default function UpworkSocialLink({
     href,
     iconColor,
     iconHoverColor,
+    isBordered,
 }: IUpworkSocialLinkProps) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
     return (
@@ -19,7 +21,11 @@ export default function UpworkSocialLink({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <SocialLink href={href} title='View my Upwork profile'>
+            <SocialLink
+                href={href}
+                title='View my Upwork profile'
+                isBordered={isBordered}
+            >
                 <UpworkIcon color={isHovered ? iconHoverColor : iconColor} />
             </SocialLink>
         </div>
