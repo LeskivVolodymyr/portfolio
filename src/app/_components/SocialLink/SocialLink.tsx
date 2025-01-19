@@ -22,7 +22,7 @@ export default function SocialLink({
             className={`inline-flex p-4 rounded-full ${styles.link} ${isBordered ? '' : styles['no-border']}`}
             title={title}
         >
-            {children}
+            <div className={styles['size-wrapper']}>{children}</div>
         </Link>
     );
 }

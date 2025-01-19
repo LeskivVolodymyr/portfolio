@@ -4,6 +4,14 @@
     @include mixins.interactive-element;
 }
 
+.size-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
 .no-border {
     color: var(--interactive-element-color);
     box-shadow: none;
