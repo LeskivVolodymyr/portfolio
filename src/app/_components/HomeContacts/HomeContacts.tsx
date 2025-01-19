@@ -1,29 +1,18 @@
-'use client';
-
 import LinkedInSocialLink, {
     ILinkedInSocialLinkProps,
 } from '@/app/_components/social-links/LinkedInSocialLink/LinkedInSocialLink';
-import dynamic from 'next/dynamic';
-import { ComponentType, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getCssVariable } from '@/app/helpers/getCssVariable';
 import { useTheme } from '@/app/context/ThemeContext';
-import { IContactMeButtonProps } from '@/app/_components/ContactMeButton/ContactMeButton';
+import ContactMeButton, {
+    IContactMeButtonProps,
+} from '@/app/_components/ContactMeButton/ContactMeButton';
 import GitHubSocialLink, {
     IGitHubSocialLinkProps,
 } from '@/app/_components/social-links/GitHubSocialLink/GithubSocialLink';
 import UpworkSocialLink, {
     IUpworkSocialLinkProps,
 } from '@/app/_components/social-links/UpworkSocialLink/UpworkSocilaLink';
-
-const ContactMeButton = dynamic<IContactMeButtonProps>(
-    () =>
-        import('@/app/_components/ContactMeButton/ContactMeButton').then(
-            (mod) => mod.default as ComponentType<IContactMeButtonProps>
-        ),
-    {
-        ssr: false,
-    }
-);
 
 export default function HomeContacts() {
     const { theme } = useTheme();
@@ -62,11 +51,13 @@ export default function HomeContacts() {
     };
 
     return (
-        <div className='flex gap-4'>
+        <div className='flex flex-col md:flex-row gap-4'>
             <ContactMeButton {...contactMeButtonProps} />
-            <LinkedInSocialLink {...linkedInSocialLinkProps} />
-            <GitHubSocialLink {...gitHubSocialLinkProps} />
-            <UpworkSocialLink {...upworkSocialLinkProps} />
+            <div className='flex gap-4 justify-center'>
+                <LinkedInSocialLink {...linkedInSocialLinkProps} />
+                <GitHubSocialLink {...gitHubSocialLinkProps} />
+                <UpworkSocialLink {...upworkSocialLinkProps} />
+            </div>
         </div>
     );
 }
