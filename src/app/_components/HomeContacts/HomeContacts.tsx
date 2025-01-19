@@ -1,9 +1,8 @@
+'use client';
+
 import LinkedInSocialLink, {
     ILinkedInSocialLinkProps,
 } from '@/app/_components/social-links/LinkedInSocialLink/LinkedInSocialLink';
-import { useEffect, useState } from 'react';
-import { getCssVariable } from '@/app/helpers/getCssVariable';
-import { useTheme } from '@/app/context/ThemeContext';
 import ContactMeButton, {
     IContactMeButtonProps,
 } from '@/app/_components/ContactMeButton/ContactMeButton';
@@ -13,19 +12,10 @@ import GitHubSocialLink, {
 import UpworkSocialLink, {
     IUpworkSocialLinkProps,
 } from '@/app/_components/social-links/UpworkSocialLink/UpworkSocilaLink';
+import { useIconColors } from '@/app/_hooks/useIconColors';
 
 export default function HomeContacts() {
-    const { theme } = useTheme();
-
-    const [iconColor, setIconColor] = useState(getCssVariable('--font-color'));
-    const [iconHoverColor, setIconHoverColor] = useState(
-        getCssVariable('--background-color')
-    );
-
-    useEffect(() => {
-        setIconColor(getCssVariable('--font-color'));
-        setIconHoverColor(getCssVariable('--background-color'));
-    }, [theme]);
+    const { iconColor, iconHoverColor } = useIconColors();
 
     const contactMeButtonProps: IContactMeButtonProps = {
         iconColor,

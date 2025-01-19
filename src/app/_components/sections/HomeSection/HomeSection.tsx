@@ -1,18 +1,6 @@
-'use client';
-
 import Image from 'next/image';
+import HomeContacts from '@/app/_components/HomeContacts/HomeContacts';
 import bob from '../../../../../public/images/random-dude.png';
-import dynamic from 'next/dynamic';
-
-const HomeContacts = dynamic(
-    () =>
-        import('@/app/_components/HomeContacts/HomeContacts').then(
-            (mod) => mod.default
-        ),
-    {
-        ssr: false,
-    }
-);
 
 export default function HomeSection() {
     return (
@@ -26,7 +14,7 @@ export default function HomeSection() {
                 </div>
                 <HomeContacts />
             </div>
-            <div className='flex-1'>
+            <div className='flex-1 mt-7 md:mt-0'>
                 <Image
                     src={bob}
                     alt='Bob'
