@@ -37,8 +37,8 @@ export default function LetsConnectSection() {
     };
 
     return (
-        <div className='flex flex-col place-content-center flex-wrap  md:flex-row'>
-            <div className='flex flex-col self-center flex-1'>
+        <div className='flex flex-col flex-wrap  md:flex-row'>
+            <div className='flex flex-col flex-1'>
                 <h2 className='text-6xl mb-2'>LET’S CONNECT</h2>
                 <div className='mb-5 flex flex-col'>
                     <div>
