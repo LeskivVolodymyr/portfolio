@@ -2,7 +2,7 @@ import Section from '@/app/_components/Section/Section';
 import LetsConnectSection from '@/app/_components/sections/LetsConnectSection/LetsConnectSection';
 import HomeSection from '@/app/_components/sections/HomeSection/HomeSection';
 
-export default function Home() {
+export default function Page() {
     return (
         <div className=''>
             <Section>
@@ -11,8 +11,12 @@ export default function Home() {
             <Section>
                 <LetsConnectSection />
             </Section>
-            <Section>kek1</Section>
-            <Section bottomSeparator={false}>kek2</Section>
+            <Section>
+                <span>section</span>
+            </Section>
+            <Section bottomSeparator={false}>
+                <span>section</span>
+            </Section>
         </div>
     );
 }
