@@ -1,6 +1,6 @@
 import LinkedInIcon from '@/app/_components/icons/LinkedInIcon/LinkedInIcon';
 import SocialLink from '@/app/_components/SocialLink/SocialLink';
-import {useState} from 'react';
+import { useState } from 'react';
 
 export interface ILinkedInSocialLinkProps {
     href: string;
@@ -9,10 +9,10 @@ export interface ILinkedInSocialLinkProps {
 }
 
 export default function LinkedInSocialLink({
-                                               href,
-                                               iconColor,
-                                               iconHoverColor,
-                                           }: ILinkedInSocialLinkProps) {
+    href,
+    iconColor,
+    iconHoverColor,
+}: ILinkedInSocialLinkProps) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
     return (
@@ -21,7 +21,7 @@ export default function LinkedInSocialLink({
             onMouseLeave={() => setIsHovered(false)}
         >
             <SocialLink href={href} title='View my LinedIn profile'>
-                <LinkedInIcon color={isHovered ? iconHoverColor : iconColor}/>
+                <LinkedInIcon color={isHovered ? iconHoverColor : iconColor} />
             </SocialLink>
         </div>
     );

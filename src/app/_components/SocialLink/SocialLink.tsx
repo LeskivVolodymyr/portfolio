@@ -1,4 +1,4 @@
-import {ReactElement} from 'react';
+import { ReactElement } from 'react';
 import Link from 'next/link';
 import styles from './SocialLink.module.scss';
 
@@ -9,10 +9,10 @@ export interface ISocialLinkProps {
 }
 
 export default function SocialLink({
-                                       children,
-                                       href,
-                                       title,
-                                   }: ISocialLinkProps) {
+    children,
+    href,
+    title,
+}: ISocialLinkProps) {
     return (
         <Link
             target='_blank'

@@ -1,12 +1,12 @@
-import {useEffect, useState} from 'react';
-import {getCssVariable} from '@/app/helpers/getCssVariable';
-import {useTheme} from '@/app/context/ThemeContext';
+import { useEffect, useState } from 'react';
+import { getCssVariable } from '@/app/helpers/getCssVariable';
+import { useTheme } from '@/app/context/ThemeContext';
 
 export function useIconColors() {
     const defaultIconColor = '#333333';
     const defaultIconHoverColor = '#282a36';
 
-    const {theme} = useTheme();
+    const { theme } = useTheme();
     const [iconColor, setIconColor] = useState(defaultIconColor);
     const [iconHoverColor, setIconHoverColor] = useState(defaultIconHoverColor);
 
@@ -15,5 +15,5 @@ export function useIconColors() {
         setIconHoverColor(getCssVariable('--background-color'));
     }, [theme]);
 
-    return {iconColor, iconHoverColor};
+    return { iconColor, iconHoverColor };
 }

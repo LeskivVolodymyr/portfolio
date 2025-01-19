@@ -3,6 +3,7 @@ import './globals.scss';
 import Header from '@/app/_components/Header/Header';
 import ThemeSwitch from '@/app/_components/ThemeSwitch/ThemeSwitch';
 import { ThemeProvider } from '@/app/context/ThemeContext';
+import { ReactNode } from 'react';
 
 export const metadata: Metadata = {
     title: 'Volodymyr Leskiv',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
     children,
 }: Readonly<{
-    children: React.ReactNode;
+    children: ReactNode;
 }>) {
     return (
         <html lang='en'>
