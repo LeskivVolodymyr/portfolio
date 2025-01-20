@@ -98,7 +98,7 @@ export default function ContactForm() {
                         </div>
 
                         <Button type='submit' disabled={isSubmitting}>
-                            Submit
+                            <>Submit</>
                         </Button>
                     </Form>
                 )}
