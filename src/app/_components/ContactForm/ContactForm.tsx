@@ -26,12 +26,14 @@ export default function ContactForm() {
                 validate={(values) => {
                     const errors = {};
                     if (!values.email) {
+                        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
                         (errors as any).email = 'Required'; // TODO: Fix any
                     } else if (
                         !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
                             values.email
                         )
                     ) {
+                        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
                         (errors as any).email = 'Invalid email address'; // TODO: Fix any
                     }
                     return errors;
