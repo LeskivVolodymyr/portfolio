@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import styles from './ContactForm.module.scss';
+import Button from '@/app/_components/Buton/Button';
 
 interface IContactForm {
     name: string;
@@ -17,7 +18,7 @@ export default function ContactForm() {
         message: '',
     };
 
-    const fieldClasses = 'border border-gray-300 rounded-md p-2';
+    const fieldClasses = 'rounded-md px-4 py-3';
 
     return (
         <div>
@@ -47,38 +48,58 @@ export default function ContactForm() {
             >
                 {({ isSubmitting }) => (
                     <Form className='flex flex-col gap-4'>
-                        <Field
-                            type='text'
-                            name='name'
-                            className={`${styles.filed} ${fieldClasses}`}
-                        />
-                        <ErrorMessage name='name' component='div' />
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor='name'>Name</label>
+                            <Field
+                                type='text'
+                                name='name'
+                                id='name'
+                                placeholder='John Doe'
+                                className={`${styles.filed} ${fieldClasses}`}
+                            />
+                            <ErrorMessage name='name' component='div' />
+                        </div>
 
-                        <Field
-                            type='text'
-                            name='email'
-                            className={`${styles.filed} ${fieldClasses}`}
-                        />
-                        <ErrorMessage name='email' component='div' />
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor='email'>Email</label>
+                            <Field
+                                type='text'
+                                name='email'
+                                id='email'
+                                placeholder='your@email.com'
+                                className={`${styles.filed} ${fieldClasses}`}
+                            />
+                            <ErrorMessage name='email' component='div' />
+                        </div>
 
-                        <Field
-                            type='text'
-                            name='subject'
-                            className={`${styles.filed} ${fieldClasses}`}
-                        />
-                        <ErrorMessage name='subject' component='div' />
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor='subject'>Subject</label>
+                            <Field
+                                type='text'
+                                name='subject'
+                                id='subject'
+                                placeholder='Subject'
+                                className={`${styles.filed} ${fieldClasses}`}
+                            />
+                            <ErrorMessage name='subject' component='div' />
+                        </div>
 
-                        <Field
-                            type='text'
-                            name='message'
-                            component='textarea'
-                            className={`${styles.filed} ${fieldClasses}`}
-                        />
-                        <ErrorMessage name='message' component='div' />
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor='message'>Message</label>
+                            <Field
+                                type='text'
+                                name='message'
+                                id='message'
+                                component='textarea'
+                                placeholder='Start typing your message...'
+                                className={`${styles.filed} ${fieldClasses} h-24 min-h-24`}
+                            />
+                            <ErrorMessage name='message' component='div' />
+                        </div>
 
-                        <button type='submit' disabled={isSubmitting}>
+                        <Button type='submit' disabled={isSubmitting}>
                             Submit
-                        </button>
+                        </Button>
                     </Form>
                 )}
             </Formik>

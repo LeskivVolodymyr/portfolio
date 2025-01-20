@@ -4,11 +4,11 @@ import HomeSection from '@/app/_components/sections/HomeSection/HomeSection';
 
 export default function Page() {
     return (
-        <div className=''>
+        <>
             <Section>
                 <HomeSection />
             </Section>
-            <Section>
+            <Section id={'lets-connect-section'}>
                 <LetsConnectSection />
             </Section>
             <Section>
@@ -17,6 +17,6 @@ export default function Page() {
             <Section bottomSeparator={false}>
                 <span>section</span>
             </Section>
-        </div>
+        </>
     );
 }

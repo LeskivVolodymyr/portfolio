@@ -1,5 +1,5 @@
 @use 'src/app/_styles/utils/colors' as colors;
 
 .filed{
-  background-color: gray;
+  background-color: colors.$gray; // TODO: decide light scheme colors. add new var
 }
