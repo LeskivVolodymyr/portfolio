@@ -26,13 +26,13 @@ export default function ContactForm() {
                 validate={(values) => {
                     const errors = {};
                     if (!values.email) {
-                        errors.email = 'Required';
+                        (errors as any).email = 'Required'; // TODO: Fix any
                     } else if (
                         !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
                             values.email
                         )
                     ) {
-                        errors.email = 'Invalid email address';
+                        (errors as any).email = 'Invalid email address'; // TODO: Fix any
                     }
                     return errors;
                 }}
