@@ -11,6 +11,7 @@ import UpworkSocialLink, {
 } from '@/app/_components/social-links/UpworkSocialLink/UpworkSocilaLink';
 import { useIconColors } from '@/app/_hooks/useIconColors';
 import styles from './LetsConnectSection.module.scss';
+import ContactForm from "@/app/_components/ContactForm/ContactForm";
 
 export default function LetsConnectSection() {
     const { iconInteractiveColor } = useIconColors();
@@ -66,7 +67,9 @@ export default function LetsConnectSection() {
                     <UpworkSocialLink {...upworkSocialLinkProps} />
                 </div>
             </div>
-            <div className='flex-1'>form</div>
+            <div className='flex-1'>
+                <ContactForm/>
+            </div>
         </div>
     );
 }
