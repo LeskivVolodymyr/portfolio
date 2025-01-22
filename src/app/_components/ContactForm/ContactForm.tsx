@@ -1,7 +1,8 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import styles from './ContactForm.module.scss';
-import Button from '@/app/_components/Buton/Button';
+import Button from '@/app/_components/Button/Button';
+import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 
 interface IContactForm {
     name: string;
@@ -24,21 +25,7 @@ export default function ContactForm() {
         <div>
             <Formik
                 initialValues={initialValues}
-                validate={(values) => {
-                    const errors = {};
-                    if (!values.email) {
-                        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-                        (errors as any).email = 'Required'; // TODO: Fix any
-                    } else if (
-                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-                            values.email
-                        )
-                    ) {
-                        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-                        (errors as any).email = 'Invalid email address'; // TODO: Fix any
-                    }
-                    return errors;
-                }}
+                validationSchema={contactFormSchema}
                 onSubmit={(values, { setSubmitting }) => {
                     setTimeout(() => {
                         alert(JSON.stringify(values, null, 2));

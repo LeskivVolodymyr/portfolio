@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import DotIcon from '@/app/_components/icons/DotIcon/DotIcon';
-import Button from '@/app/_components/Buton/Button';
+import Button from '@/app/_components/Button/Button';
 
 export interface IContactMeButtonProps {
     iconColor: string;
