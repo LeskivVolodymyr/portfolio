@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import HomeContacts from '@/app/_components/HomeContacts/HomeContacts';
 import bob from '../../../../../public/images/random-dude.png';
+import Titles from '@/app/_components/Title/Titles';
 
 export default function HomeSection() {
     return (
@@ -10,7 +11,7 @@ export default function HomeSection() {
                     HI, I AM <br /> VOLODYMYR LESKIV.
                 </h1>
                 <div className='pb-10'>
-                    <span>A senior full-stack developer.</span>
+                    <Titles />
                 </div>
                 <HomeContacts />
             </div>
