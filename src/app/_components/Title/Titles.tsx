@@ -13,7 +13,7 @@ const TitleTypeAnimation = dynamic(
 
 export default function Titles() {
     return (
-        <span className='text-2xl min-h-8 h-8 flex'>
+        <span className='text-3xl min-h-8 h-8 flex'>
             {<TitleTypeAnimation />}
         </span>
     );
