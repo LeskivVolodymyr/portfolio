@@ -10,6 +10,8 @@
   --font-color: #{colors.$font-color-dark};
   --interactive-element-color: #{colors.$interactive-element-color-dark};
   --background-color: #{colors.$background-color-dark};
+  --form-error-color: #{colors.$error-color-dark};
+  --form-background-color: #{colors.$form-background-color-dark};
 }
 
 /* Light theme variables */
@@ -17,10 +19,12 @@
   --font-color: #{colors.$font-color-light};
   --interactive-element-color: #{colors.$interactive-element-color-light};
   --background-color: #{colors.$background-color-light};
+  --form-error-color: #{colors.$error-color-light};
+  --form-background-color: #{colors.$form-background-color-light};
 }
 
 html, body {
-  transition: background-color 0.3s, color 0.3s;
+  transition: all 0.3s, color 0.3s;
 }
 
 body {

@@ -2,23 +2,26 @@
 $green: #50fa7b;
 $dark-grayish-blue: #282a36;
 $grayish-white: #f8f8f2;
-// ??
 $gray: #44475a;
+$red: #FF5555;
 
 // light mode colors
 $black: #333333;
-$white: #ffffff;
+$white-2: #fffff2;
 $blue: #0056b3;
+$red-2: #ff0000;
 
-//$background-2:  $gray;
 
 //  Dark mode
 $font-color-dark: $grayish-white;
-//$font-color-for-lite-background: $dark-grayish-blue;
 $interactive-element-color-dark: $green;
 $background-color-dark: $dark-grayish-blue;
+$error-color-dark: $red;
+$form-background-color-dark: $gray;
 
 //  Light mode
 $font-color-light: $black;
 $interactive-element-color-light: $blue;
-$background-color-light: $white;
+$background-color-light: $grayish-white;
+$error-color-light: $red-2;
+$form-background-color-light: $white-2;

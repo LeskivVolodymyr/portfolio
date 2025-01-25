@@ -21,8 +21,12 @@ export default function LinkedInSocialLink({
         <div
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onTouchStart={() => setIsHovered(true)}
+            onTouchEnd={() => setIsHovered(false)}
         >
             <SocialLink
+                onFocus={() => setIsHovered(true)}
+                onBlur={() => setIsHovered(false)}
                 href={href}
                 title='View my LinedIn profile'
                 isBordered={isBordered}

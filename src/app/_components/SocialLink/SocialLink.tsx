@@ -7,6 +7,8 @@ export interface ISocialLinkProps {
     href: string;
     title: string;
     isBordered?: boolean;
+    onFocus?: () => void;
+    onBlur?: () => void;
 }
 
 export default function SocialLink({
@@ -14,6 +16,8 @@ export default function SocialLink({
     href,
     title,
     isBordered = true,
+    onFocus,
+    onBlur,
 }: ISocialLinkProps) {
     return (
         <Link
@@ -21,6 +25,8 @@ export default function SocialLink({
             href={href}
             className={`inline-flex p-4 rounded-full ${styles.link} ${isBordered ? '' : styles['no-border']}`}
             title={title}
+            onFocus={onFocus}
+            onBlur={onBlur}
         >
             <div className={styles['size-wrapper']}>{children}</div>
         </Link>

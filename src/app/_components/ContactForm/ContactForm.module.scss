@@ -1,5 +1,9 @@
-@use 'src/app/_styles/utils/colors' as colors;
+.input-field {
+  transition: all 0.3s, all 0.3s;
+  background-color: var(--form-background-color);
+  box-shadow: rgba(17, 17, 26, 0.05) 0 1px 0, rgba(17, 17, 26, 0.1) 0 0 8px;
+}
 
-.filed{
-  background-color: colors.$gray; // TODO: decide light scheme colors. add new var
+.error {
+  color: var(--form-error-color);
 }
