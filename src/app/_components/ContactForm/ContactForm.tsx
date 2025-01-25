@@ -11,13 +11,9 @@ import {
 import styles from './ContactForm.module.scss';
 import Button from '@/app/_components/Button/Button';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
-
-interface IContactForm {
-    name: string;
-    email: string;
-    subject: string;
-    message: string;
-}
+import { IContactForm } from '@/app/interfaces/IContactForm';
+import { contactFormToFormData } from '@/app/helpers/mapper';
+import { connect } from '@/app/_clients/api-client';
 
 export default function ContactForm() {
     const initialValues: IContactForm = {
@@ -54,11 +50,11 @@ export default function ContactForm() {
             <Formik
                 initialValues={initialValues}
                 validationSchema={contactFormSchema}
-                onSubmit={(values, { setSubmitting }) => {
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                    }, 400);
+                onSubmit={async (values, { setSubmitting }) => {
+                    setSubmitting(true);
+                    const formData: FormData = contactFormToFormData(values);
+                    await connect(formData);
+                    setSubmitting(false);
                 }}
             >
                 {({ values, errors, touched, isSubmitting, submitCount }) => (
