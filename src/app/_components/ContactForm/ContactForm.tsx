@@ -1,5 +1,13 @@
 import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import {
+    Formik,
+    Form,
+    Field,
+    ErrorMessage,
+    FormikTouched,
+    FormikValues,
+    FormikErrors,
+} from 'formik';
 import styles from './ContactForm.module.scss';
 import Button from '@/app/_components/Button/Button';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
@@ -19,10 +27,30 @@ export default function ContactForm() {
         message: '',
     };
 
-    const fieldClasses = 'rounded-md px-4 py-3';
+    const fieldWrapperClasses = 'flex flex-col gap-1';
+    const fieldClasses = `${styles[`input-field`]} rounded-md px-4 py-3 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]`;
+    const errorClasses = `${styles.error} text-sm`;
+
+    const showErrors = (
+        fieldName: string,
+        errors: FormikErrors<FormikValues>,
+        touched: FormikTouched<FormikValues>,
+        values: FormikValues,
+        submitCount: number
+    ) => {
+        const hasError = !!errors[fieldName];
+        const hasTouched = touched[fieldName];
+        const isEmpty = !!values[fieldName];
+        const isEmptyAndNotSubmitted = isEmpty && submitCount === 0;
+        return (
+            hasError &&
+            hasTouched &&
+            (submitCount > 0 || isEmptyAndNotSubmitted)
+        );
+    };
 
     return (
-        <div>
+        <div className='max-w-screen-sm'>
             <Formik
                 initialValues={initialValues}
                 validationSchema={contactFormSchema}
@@ -33,45 +61,81 @@ export default function ContactForm() {
                     }, 400);
                 }}
             >
-                {({ isSubmitting }) => (
+                {({ values, errors, touched, isSubmitting, submitCount }) => (
                     <Form className='flex flex-col gap-4'>
-                        <div className='flex flex-col gap-1'>
+                        <div className={fieldWrapperClasses}>
                             <label htmlFor='name'>Name</label>
                             <Field
                                 type='text'
                                 name='name'
                                 id='name'
                                 placeholder='John Doe'
-                                className={`${styles.filed} ${fieldClasses}`}
+                                className={fieldClasses}
                             />
-                            <ErrorMessage name='name' component='div' />
+                            {showErrors(
+                                'name',
+                                errors,
+                                touched,
+                                values,
+                                submitCount
+                            ) && (
+                                <ErrorMessage
+                                    className={errorClasses}
+                                    name='name'
+                                    component='div'
+                                />
+                            )}
                         </div>
 
-                        <div className='flex flex-col gap-1'>
+                        <div className={fieldWrapperClasses}>
                             <label htmlFor='email'>Email</label>
                             <Field
                                 type='text'
                                 name='email'
                                 id='email'
                                 placeholder='your@email.com'
-                                className={`${styles.filed} ${fieldClasses}`}
+                                className={fieldClasses}
                             />
-                            <ErrorMessage name='email' component='div' />
+                            {showErrors(
+                                'email',
+                                errors,
+                                touched,
+                                values,
+                                submitCount
+                            ) && (
+                                <ErrorMessage
+                                    className={errorClasses}
+                                    name='email'
+                                    component='div'
+                                />
+                            )}
                         </div>
 
-                        <div className='flex flex-col gap-1'>
+                        <div className={fieldWrapperClasses}>
                             <label htmlFor='subject'>Subject</label>
                             <Field
                                 type='text'
                                 name='subject'
                                 id='subject'
                                 placeholder='Subject'
-                                className={`${styles.filed} ${fieldClasses}`}
+                                className={fieldClasses}
                             />
-                            <ErrorMessage name='subject' component='div' />
+                            {showErrors(
+                                'subject',
+                                errors,
+                                touched,
+                                values,
+                                submitCount
+                            ) && (
+                                <ErrorMessage
+                                    className={errorClasses}
+                                    name='subject'
+                                    component='div'
+                                />
+                            )}
                         </div>
 
-                        <div className='flex flex-col gap-1'>
+                        <div className={fieldWrapperClasses}>
                             <label htmlFor='message'>Message</label>
                             <Field
                                 type='text'
@@ -79,9 +143,21 @@ export default function ContactForm() {
                                 id='message'
                                 component='textarea'
                                 placeholder='Start typing your message...'
-                                className={`${styles.filed} ${fieldClasses} h-24 min-h-24`}
+                                className={`${fieldClasses} h-24 min-h-24`}
                             />
-                            <ErrorMessage name='message' component='div' />
+                            {showErrors(
+                                'message',
+                                errors,
+                                touched,
+                                values,
+                                submitCount
+                            ) && (
+                                <ErrorMessage
+                                    className={errorClasses}
+                                    name='message'
+                                    component='div'
+                                />
+                            )}
                         </div>
 
                         <Button type='submit' disabled={isSubmitting}>

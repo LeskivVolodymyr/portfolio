@@ -26,6 +26,8 @@ export default function Button({
             onMouseLeave={onMouseLeave}
             onTouchStart={onMouseEnter}
             onTouchEnd={onMouseLeave}
+            onFocus={onMouseEnter}
+            onBlur={onMouseLeave}
             onClick={onclick}
             className={buttonClasses}
             disabled={disabled}
