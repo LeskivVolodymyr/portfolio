@@ -12,7 +12,8 @@ const emailValidation = Yup.string()
 const subjectValidation = Yup.string()
     .min(10, 'Subject too short (min 10 chars).')
     .max(500, 'Subject too long (max 500 chars).')
-    .optional();
+    .optional()
+    .nullable();
 
 const messageValidation = Yup.string()
     .min(10, 'Message too short (min 10 chars).')
