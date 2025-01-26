@@ -8,7 +8,7 @@ export default function Page() {
             <Section>
                 <HomeSection />
             </Section>
-            <Section id={'lets-connect-section'}>
+            <Section id='lets-connect'>
                 <LetsConnectSection />
             </Section>
             <Section>

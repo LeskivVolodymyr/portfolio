@@ -12,6 +12,7 @@
     "dependencies": {
         "dompurify": "^3.2.3",
         "formik": "^2.4.6",
+        "hamburger-react": "^2.5.2",
         "jsdom": "^26.0.0",
         "lru-cache": "^11.0.2",
         "next": "15.1.4",
