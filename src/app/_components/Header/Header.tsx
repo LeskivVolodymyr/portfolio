@@ -41,7 +41,7 @@ export default function Header() {
 
     return (
         <header
-            className={`${styles.header} ${isVisible ? 'top-0' : '-top-[90px]'} fixed flex justify-between items-center px-14 py-6`}
+            className={`${styles.header} ${isVisible ? 'top-0' : '-top-[90px]'} fixed flex w-full justify-between items-center px-14 py-6`}
         >
             <div className={`text-3xl ${styles.label}`}>VOLODYMYR LESKIV</div>
             <nav className='flex'>
