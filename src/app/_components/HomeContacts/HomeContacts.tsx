@@ -17,8 +17,9 @@ import { useIconColors } from '@/app/_hooks/useIconColors';
 export default function HomeContacts() {
     const { iconColor, iconHoverColor } = useIconColors();
 
+    // TODO: rewrite with anchor link
     const scrollToLetsConnect = () => {
-        const element = document.getElementById('lets-connect-section');
+        const element = document.getElementById('lets-connect');
         if (!element) return;
 
         element.scrollIntoView({ behavior: 'smooth' });

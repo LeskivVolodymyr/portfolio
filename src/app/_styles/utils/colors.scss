@@ -1,3 +1,5 @@
+@use "sass:color";
+
 // dark mode colors
 $green: #50fa7b;
 $dark-grayish-blue: #282a36;
@@ -7,7 +9,7 @@ $red: #FF5555;
 
 // light mode colors
 $black: #333333;
-$white-2: #fffff2;
+$white: #fffff2;
 $blue: #0056b3;
 $red-2: #ff0000;
 
@@ -18,10 +20,12 @@ $interactive-element-color-dark: $green;
 $background-color-dark: $dark-grayish-blue;
 $error-color-dark: $red;
 $form-background-color-dark: $gray;
+$navbar-background-color-dark: color.adjust($background-color-dark, $lightness: -3%);
 
 //  Light mode
 $font-color-light: $black;
 $interactive-element-color-light: $blue;
 $background-color-light: $grayish-white;
 $error-color-light: $red-2;
-$form-background-color-light: $white-2;
+$form-background-color-light: $white;
+$navbar-background-color-light: color.adjust($background-color-light, $lightness: -3%);

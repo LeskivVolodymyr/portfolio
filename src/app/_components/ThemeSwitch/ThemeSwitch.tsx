@@ -2,8 +2,11 @@
 
 import { useTheme } from '@/app/context/ThemeContext';
 
-// TODO: replace with normal code... maybe storage and/or sys preferences
-export default function ThemeSwitch() {
+export interface IThemeSwitchProps {
+    onThemeChange?: () => void;
+}
+
+export default function ThemeSwitch({ onThemeChange }: IThemeSwitchProps) {
     const { theme, setTheme } = useTheme();
 
     const toggleTheme = () => {
@@ -14,11 +17,12 @@ export default function ThemeSwitch() {
             document.documentElement.classList.add('light');
             setTheme('light');
         }
+        if (onThemeChange) onThemeChange();
     };
 
     return (
         <button onClick={toggleTheme}>
-            {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            {theme === 'light' ? 'Dark mode' : 'Light mode'}
         </button>
     );
 }
