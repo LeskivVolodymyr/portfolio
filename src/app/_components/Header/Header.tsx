@@ -21,7 +21,7 @@ export default function Header() {
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [prevScrollPos]);
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
