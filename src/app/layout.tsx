@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.scss';
 import { ThemeProvider } from '@/app/context/ThemeContext';
 import { ReactNode } from 'react';
-import HeaderWrapper from '@/app/_components/Header/HeaderWrapper';
+import Header from '@/app/_components/Header/Header';
 
 export const metadata: Metadata = {
     title: 'Volodymyr Leskiv',
@@ -18,8 +18,8 @@ export default function RootLayout({
         <html lang='en'>
             <body>
                 <ThemeProvider>
-                    <HeaderWrapper />
-                    <div className='flex w-full justify-center mt-24'>
+                    <Header />
+                    <div className='flex w-full justify-center'>
                         <main className='px-4'>{children}</main>
                     </div>
                 </ThemeProvider>

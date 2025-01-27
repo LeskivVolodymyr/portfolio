@@ -1,16 +1,16 @@
+// noinspection HtmlUnknownAnchorTarget
+
 'use client';
 
 import { Spin } from 'hamburger-react';
 import styles from './Header.module.scss';
 import { useState, useEffect } from 'react';
-import { useWindowWidth } from '@/app/_hooks/useWindowWidth';
 import ThemeSwitch from '@/app/_components/ThemeSwitch/ThemeSwitch';
 
 export default function Header() {
-    const [isOpen, setOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const [prevScrollPos, setPrevScrollPos] = useState(0);
     const [isVisible, setIsVisible] = useState(true);
-    const width = useWindowWidth();
 
     const handleScroll = () => {
         const currentScrollPos = window.scrollY;
@@ -30,40 +30,46 @@ export default function Header() {
             document.body.classList.remove('overflow-hidden');
         }
     }, [isOpen]);
-    // TODO: rewrite using :md and :lg
-    const mobileListClasses =
-        width < 1024
-            ? isOpen
-                ? `${styles.mobile} gap-y-4 items-center justify-center w-full`
-                : 'hidden'
-            : '';
-    const listClasses = `flex flex-col lg:flex-row gap-x-8 ${mobileListClasses}`;
+
+    const mobileNavigation = isOpen
+        ? `${styles['mobile-navigation']} text-2xl`
+        : 'hidden lg:flex';
+    const listClasses = `flex flex-col lg:flex-row gap-x-8 gap-y-4 items-center justify-center w-full  top-[90px] left-0 absolute lg:static ${mobileNavigation}`;
+
+    const handleClick = () => {
+        if (isOpen) setIsOpen(false);
+    };
 
     return (
         <header
-            className={`${styles.header} ${isVisible ? 'top-0' : '-top-[100px]'} fixed flex w-full justify-between items-center px-14 py-6`}
+            className={`${styles.header} ${isVisible ? 'top-0' : '-top-[100px]'} fixed flex w-full justify-between items-center px-4 lg:px-14 py-6`}
         >
             <div className={`text-3xl ${styles.label}`}>VOLODYMYR LESKIV</div>
             <nav className='flex'>
-                {width < 1024 && (
-                    <div>
-                        <Spin size={30} toggled={isOpen} toggle={setOpen} />
-                    </div>
-                )}
-
+                <div className='lg:hidden'>
+                    <Spin size={30} toggled={isOpen} toggle={setIsOpen} />
+                </div>
                 <ul className={listClasses}>
-                    <ThemeSwitch />
+                    <ThemeSwitch onThemeChange={handleClick} />
                     <li>
-                        <a href='#home'>Home</a>
+                        <a onClick={handleClick} href='#home'>
+                            Home
+                        </a>
                     </li>
                     <li>
-                        <a href='#about'>About</a>
+                        <a onClick={handleClick} href='#'>
+                            About
+                        </a>
                     </li>
                     <li>
-                        <a href='#services'>Services</a>
+                        <a onClick={handleClick} href='#'>
+                            Services
+                        </a>
                     </li>
                     <li>
-                        <a href='#lets-connect'>Contact</a>
+                        <a onClick={handleClick} href='#lets-connect'>
+                            Contact
+                        </a>
                     </li>
                 </ul>
             </nav>

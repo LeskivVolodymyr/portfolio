@@ -5,17 +5,17 @@
     transition: all 0.3s;
     background-color: var(--navbar-background-color);
     box-shadow: 0 2px 2px -2px rgba(0,0,0,.2);
+
+    ul {
+        background-color: var(--navbar-background-color);
+        transition: all 0.3s;
+    }
 }
 
 .label {
     font-family: font.$font-bebas-neue;
 }
 
-.mobile{
-    position: absolute;
-    top: 90px;
-    left: 0;
-    background-color: var(--navbar-background-color);
+.mobile-navigation {
     height: calc( 100vh - 90px );
-    transition: all 0.3s;
 }

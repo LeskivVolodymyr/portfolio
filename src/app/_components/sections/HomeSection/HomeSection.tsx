@@ -5,7 +5,7 @@ import Titles from '@/app/_components/Title/Titles';
 
 export default function HomeSection() {
     return (
-        <div className='flex flex-col place-content-center flex-wrap  md:flex-row'>
+        <div className='flex flex-col place-content-center flex-wrap md:flex-row  lg:pt-24 pt-36'>
             <div className='flex flex-col self-center flex-1'>
                 <h1 className='text-7xl'>
                     HI, I AM <br /> VOLODYMYR LESKIV.
