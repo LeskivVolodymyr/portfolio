@@ -1,6 +1,6 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import { PHASE_DEVELOPMENT_SERVER } from 'next/constants';
 import type { NextConfig } from 'next';
-import type { Configuration } from 'webpack';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (phase: string): NextConfig => {
@@ -8,7 +8,7 @@ export default (phase: string): NextConfig => {
 
     return {
         assetPrefix: isDev ? undefined : '/',
-        webpack: (config: Configuration) => {
+        webpack: (config: any) => {
             if (isDev) {
                 config.watchOptions = {
                     poll: 1000,
