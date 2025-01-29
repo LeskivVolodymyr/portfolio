@@ -4,24 +4,29 @@
 
 import { Spin } from 'hamburger-react';
 import styles from './Header.module.scss';
-import { useState, useEffect } from 'react';
 import ThemeSwitch from '@/app/_components/ThemeSwitch/ThemeSwitch';
+import { useRef, useEffect, useState } from 'react';
+import { debounce } from 'next/dist/server/utils';
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
-    const [prevScrollPos, setPrevScrollPos] = useState(0);
     const [isVisible, setIsVisible] = useState(true);
-
-    const handleScroll = () => {
-        const currentScrollPos = window.scrollY;
-        setIsVisible(prevScrollPos > currentScrollPos || currentScrollPos < 50);
-        setPrevScrollPos(currentScrollPos);
-    };
+    const prevScrollPosRef = useRef(0);
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
+        const handleScroll = () => {
+            const currentScrollPos = window.scrollY;
+            setIsVisible(
+                prevScrollPosRef.current > currentScrollPos ||
+                    currentScrollPos < 50
+            );
+            prevScrollPosRef.current = currentScrollPos;
+        };
+
+        window.addEventListener('scroll', debounce(handleScroll, 150));
+
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [prevScrollPos]);
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
