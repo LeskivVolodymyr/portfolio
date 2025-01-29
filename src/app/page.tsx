@@ -5,10 +5,10 @@ import HomeSection from '@/app/_components/sections/HomeSection/HomeSection';
 export default function Page() {
     return (
         <>
-            <Section>
+            <Section id='home'>
                 <HomeSection />
             </Section>
-            <Section id={'lets-connect-section'}>
+            <Section id='lets-connect'>
                 <LetsConnectSection />
             </Section>
             <Section>

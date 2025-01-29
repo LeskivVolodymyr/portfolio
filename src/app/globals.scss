@@ -12,6 +12,7 @@
   --background-color: #{colors.$background-color-dark};
   --form-error-color: #{colors.$error-color-dark};
   --form-background-color: #{colors.$form-background-color-dark};
+  --navbar-background-color: #{colors.$navbar-background-color-dark};
 }
 
 /* Light theme variables */
@@ -21,10 +22,12 @@
   --background-color: #{colors.$background-color-light};
   --form-error-color: #{colors.$error-color-light};
   --form-background-color: #{colors.$form-background-color-light};
+  --navbar-background-color: #{colors.$navbar-background-color-light};
 }
 
 html, body {
-  transition: all 0.3s, color 0.3s;
+  transition: all 0.3s;
+  scroll-behavior: smooth;
 }
 
 body {
