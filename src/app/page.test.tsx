@@ -5,19 +5,7 @@ import { act } from '@testing-library/react';
 
 describe('Page', () => {
     beforeAll(() => {
-        Object.defineProperty(window, 'matchMedia', {
-            writable: true,
-            value: jest.fn().mockImplementation((query) => ({
-                matches: query === '(prefers-color-scheme: dark)',
-                media: query,
-                onchange: null,
-                addListener: jest.fn(), // deprecated
-                removeListener: jest.fn(), // deprecated
-                addEventListener: jest.fn(),
-                removeEventListener: jest.fn(),
-                dispatchEvent: jest.fn(),
-            })),
-        });
+        mockMatchMedia();
     });
 
     it('renders the correct heading', async () => {
@@ -26,3 +14,19 @@ describe('Page', () => {
         expect(headingElement).toBeInTheDocument();
     });
 });
+
+const mockMatchMedia = () => {
+    Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: jest.fn().mockImplementation((query) => ({
+            matches: query === '(prefers-color-scheme: dark)',
+            media: query,
+            onchange: null,
+            addListener: jest.fn(),
+            removeListener: jest.fn(),
+            addEventListener: jest.fn(),
+            removeEventListener: jest.fn(),
+            dispatchEvent: jest.fn(),
+        })),
+    });
+};
