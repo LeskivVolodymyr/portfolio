@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Formik,
     Form,
@@ -14,8 +14,11 @@ import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema
 import { IContactForm } from '@/app/interfaces/IContactForm';
 import { connect } from '@/app/_lib/api-client';
 import { contactFormToFormData } from '@/app/utils/mapper';
+import Recaptcha from '@/app/_components/Recaptcha/Recaptcha';
 
 export default function ContactForm() {
+    const [isVerified, setIsVerified] = useState(false);
+
     const initialValues: IContactForm = {
         name: '',
         email: '',
@@ -155,8 +158,15 @@ export default function ContactForm() {
                                 />
                             )}
                         </div>
-
-                        <Button type='submit' disabled={isSubmitting}>
+                        <Recaptcha onVerifyChanged={setIsVerified} />
+                        {/*
+                            TODO: Add message about captcha requirement, cursor when disabled
+                                && submit fail toast
+                        */}
+                        <Button
+                            type='submit'
+                            disabled={isSubmitting || !isVerified}
+                        >
                             <>Submit</>
                         </Button>
                     </Form>

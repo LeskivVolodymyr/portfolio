@@ -9,17 +9,19 @@ import {
 } from 'react';
 
 interface ThemeContextType {
-    theme: string;
-    setTheme: (theme: string) => void;
+    theme: Theme;
+    setTheme: (theme: Theme) => void;
 }
+
+type Theme = 'light' | 'dark';
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-    const [theme, setTheme] = useState('dark');
+    const [theme, setTheme] = useState<Theme>('dark');
 
     useEffect(() => {
-        const storedTheme = localStorage.getItem('theme');
+        const storedTheme = localStorage.getItem('theme') as Theme;
         const systemPrefersDark = window.matchMedia(
             '(prefers-color-scheme: dark)'
         ).matches;
