@@ -8,14 +8,8 @@ export default function Page() {
             <Section id='home'>
                 <HomeSection />
             </Section>
-            <Section id='lets-connect'>
+            <Section id='lets-connect' bottomSeparator={false}>
                 <LetsConnectSection />
-            </Section>
-            <Section>
-                <span>section</span>
-            </Section>
-            <Section bottomSeparator={false}>
-                <span>section</span>
             </Section>
         </>
     );
