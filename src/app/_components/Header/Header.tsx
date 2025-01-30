@@ -49,7 +49,9 @@ export default function Header() {
         <header
             className={`${styles.header} ${isVisible ? 'top-0' : '-top-[100px]'} fixed flex w-full justify-between items-center px-4 lg:px-14 py-6`}
         >
-            <div className={`text-3xl ${styles.label}`}>VOLODYMYR LESKIV</div>
+            <div className={`text-3xl ${styles.label}`}>
+                <a href='#home'>VOLODYMYR LESKIV</a>
+            </div>
             <nav className='flex'>
                 <div className='lg:hidden'>
                     <Spin size={30} toggled={isOpen} toggle={setIsOpen} />
@@ -59,16 +61,6 @@ export default function Header() {
                     <li>
                         <a onClick={handleClick} href='#home'>
                             Home
-                        </a>
-                    </li>
-                    <li>
-                        <a onClick={handleClick} href='#'>
-                            About
-                        </a>
-                    </li>
-                    <li>
-                        <a onClick={handleClick} href='#'>
-                            Services
                         </a>
                     </li>
                     <li>
