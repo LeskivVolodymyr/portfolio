@@ -12,8 +12,8 @@ import styles from './ContactForm.module.scss';
 import Button from '@/app/_components/Button/Button';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 import { IContactForm } from '@/app/interfaces/IContactForm';
-import { contactFormToFormData } from '@/app/helpers/mapper';
-import { connect } from '@/app/_clients/api-client';
+import { connect } from '@/app/_lib/api-client';
+import { contactFormToFormData } from '@/app/utils/mapper';
 
 export default function ContactForm() {
     const initialValues: IContactForm = {

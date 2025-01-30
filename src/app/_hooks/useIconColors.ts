@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getCssVariable } from '@/app/helpers/getCssVariable';
+import { getCssVariable } from '@/app/utils/getCssVariable';
 import { useTheme } from '@/app/context/ThemeContext';
 
 export function useIconColors() {

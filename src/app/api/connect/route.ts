@@ -1,11 +1,14 @@
 import { IContactForm } from '@/app/interfaces/IContactForm';
-import { formDataToContactForm } from '@/app/helpers/mapper';
-import rateLimit from '@/app/helpers/rate-limit';
+import { formDataToContactForm } from '@/app/utils/mapper';
+import rateLimit from '@/app/utils/rate-limit';
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import validator from 'validator';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 import * as Yup from 'yup';
+import { IContactRequest } from '@/app/interfaces/dao/IContactReuest';
+import MongoService from '@/app/_lib/mongo-service';
+import MongoLogger from '@/app/utils/mongoLogger';
 
 // TODO: refactor all this to make look ok
 const limiter = rateLimit({
@@ -30,10 +33,7 @@ export async function POST(req: Request) {
         const requestPayload: IContactForm = formDataToContactForm(
             await req.formData()
         );
-
         const sanitizedPayload = sanitizeForm(requestPayload);
-
-        console.log(sanitizedPayload);
 
         await contactFormSchema.validate(sanitizedPayload, {
             abortEarly: false,
@@ -50,6 +50,16 @@ export async function POST(req: Request) {
             );
         }
 
+        const dao: IContactRequest = {
+            ...sanitizedPayload,
+            createdAt: new Date().toISOString(),
+        };
+
+        const collection =
+            await new MongoService().getCollection<IContactRequest>();
+
+        await collection.insertOne(dao);
+
         return Response.json(
             { m: '//_-)' },
             {
@@ -58,15 +68,22 @@ export async function POST(req: Request) {
         );
     } catch (e: unknown) {
         // TODO: do not expose error data. add logging.
+        // TODO: fix repetitions & make more readable structure
         if (e instanceof Yup.ValidationError) {
+            const logger = new MongoLogger();
+            await logger.log('error', JSON.stringify(e.errors));
             return Response.json({ errors: e.errors }, { status: 400 });
         }
         if (e instanceof Error) {
-            return Response.json(
-                `Something went wrong, try again. Exception ${e.message}`,
-                { status: 500 }
-            );
+            const logger = new MongoLogger();
+            await logger.log('error', e.message);
+
+            return Response.json(`Something went wrong, try again}`, {
+                status: 500,
+            });
         } else {
+            const logger = new MongoLogger();
+            await logger.log('error', String(e));
             return Response.json('Something went wrong, try again.', {
                 status: 500,
             });
