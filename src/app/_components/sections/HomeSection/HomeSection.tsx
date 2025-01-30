@@ -1,9 +1,15 @@
+'use client';
+
 import Image from 'next/image';
 import HomeContacts from '@/app/_components/HomeContacts/HomeContacts';
-import bob from '../../../../../public/images/random-dude.png';
+import silhouette from '../../../../../public/images/silhouette.png';
+import silhouetteDark from '../../../../../public/images/silhouette-dark.png';
 import Titles from '@/app/_components/Title/Titles';
+import { useTheme } from '@/app/context/ThemeContext';
 
 export default function HomeSection() {
+    const { theme } = useTheme();
+    const image = theme === 'light' ? silhouette : silhouetteDark;
     return (
         <div className='flex flex-col place-content-center flex-wrap md:flex-row  lg:pt-24 pt-36'>
             <div className='flex flex-col self-center flex-1'>
@@ -17,10 +23,10 @@ export default function HomeSection() {
             </div>
             <div className='flex-1 mt-7 md:mt-0'>
                 <Image
-                    src={bob}
-                    alt='Bob'
-                    sizes='(max-width: 768px) 100vw, 450px'
-                    width={450}
+                    src={image}
+                    alt='Silhouette'
+                    sizes='(max-width: 768px) 100vw, 600px'
+                    width={600}
                 />
             </div>
         </div>
