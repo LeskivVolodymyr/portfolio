@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import {
     Formik,
     Form,
@@ -14,16 +14,17 @@ import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema
 import { IContactForm } from '@/app/interfaces/IContactForm';
 import { connect } from '@/app/_lib/api-client';
 import { contactFormToFormData } from '@/app/utils/mapper';
-import Recaptcha from '@/app/_components/Recaptcha/Recaptcha';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function ContactForm() {
-    const [isVerified, setIsVerified] = useState(false);
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
 
     const initialValues: IContactForm = {
         name: '',
         email: '',
         subject: '',
         message: '',
+        captcha: '',
     };
 
     const fieldWrapperClasses = 'flex flex-col gap-1';
@@ -55,6 +56,7 @@ export default function ContactForm() {
                 validationSchema={contactFormSchema}
                 onSubmit={async (values, { setSubmitting }) => {
                     setSubmitting(true);
+                    values.captcha = await recaptchaRef.current?.executeAsync();
                     const formData: FormData = contactFormToFormData(values);
                     await connect(formData);
                     setSubmitting(false);
@@ -158,15 +160,17 @@ export default function ContactForm() {
                                 />
                             )}
                         </div>
-                        <Recaptcha onVerifyChanged={setIsVerified} />
-                        {/*
-                            TODO: Add message about captcha requirement, cursor when disabled
-                                && submit fail toast
-                        */}
-                        <Button
-                            type='submit'
-                            disabled={isSubmitting || !isVerified}
-                        >
+                        {touched && (
+                            <ReCAPTCHA
+                                sitekey={
+                                    process.env
+                                        .NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''
+                                }
+                                ref={recaptchaRef}
+                                size='invisible'
+                            />
+                        )}
+                        <Button type='submit' disabled={isSubmitting}>
                             <>Submit</>
                         </Button>
                     </Form>

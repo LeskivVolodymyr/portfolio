@@ -25,8 +25,11 @@ function sanitizeForm(input: IContactForm): IContactForm {
         email: purify.sanitize(validator.normalizeEmail(input.email) || ''),
         subject: purify.sanitize(validator.escape(input.subject)),
         message: purify.sanitize(validator.escape(input.message)),
+        captcha: purify.sanitize(validator.escape(input.captcha!)),
     };
 }
+
+const secretKey: string | undefined = process.env.RECAPTCHA_SECRET_KEY;
 
 export async function POST(req: Request) {
     try {
@@ -38,6 +41,21 @@ export async function POST(req: Request) {
         await contactFormSchema.validate(sanitizedPayload, {
             abortEarly: false,
         });
+
+        const captchaResponse = await fetch(
+            `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${sanitizedPayload.captcha}`,
+            { method: 'POST' }
+        ).then((res) => res.json());
+
+        // If the verification fails, return 500x code
+        if (!captchaResponse.success) {
+            return Response.json(
+                { error: captchaResponse['error-codes'][0] },
+                {
+                    status: 500,
+                }
+            );
+        }
 
         try {
             await limiter.check(20, 'CACHE_TOKEN');

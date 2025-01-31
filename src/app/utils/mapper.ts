@@ -14,6 +14,7 @@ function formDataToContactForm(formData: FormData): IContactForm {
         email: formData.get('email') as string,
         subject: formData.get('subject') as string,
         message: formData.get('message') as string,
+        captcha: formData.get('captcha') as string,
     } as IContactForm;
 }
 
