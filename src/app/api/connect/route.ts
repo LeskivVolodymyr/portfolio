@@ -45,12 +45,13 @@ export async function POST(req: Request) {
         const captchaResponse = await fetch(
             `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${sanitizedPayload.captcha}`,
             { method: 'POST' }
-        ).then((res) => res.json());
+        );
 
-        // If the verification fails, return 500x code
-        if (!captchaResponse.success) {
+        const captchaResponseJson = await captchaResponse.json();
+
+        if (!captchaResponseJson.success) {
             return Response.json(
-                { error: captchaResponse['error-codes'][0] },
+                { error: captchaResponseJson['error-codes'][0] },
                 {
                     status: 500,
                 }
@@ -85,23 +86,20 @@ export async function POST(req: Request) {
             }
         );
     } catch (e: unknown) {
-        // TODO: do not expose error data. add logging.
-        // TODO: fix repetitions & make more readable structure
+        const logger = new MongoLogger();
+        console.log('error')
         if (e instanceof Yup.ValidationError) {
-            const logger = new MongoLogger();
             await logger.log('error', JSON.stringify(e.errors));
             return Response.json({ errors: e.errors }, { status: 400 });
         }
         if (e instanceof Error) {
-            const logger = new MongoLogger();
+            console.log(e.message)
             await logger.log('error', e.message);
-
             return Response.json(`Something went wrong, try again}`, {
                 status: 500,
             });
         } else {
-            const logger = new MongoLogger();
-            await logger.log('error', String(e));
+            await logger.log('error', 'something went wrong');
             return Response.json('Something went wrong, try again.', {
                 status: 500,
             });
