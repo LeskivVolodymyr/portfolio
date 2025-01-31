@@ -6,8 +6,8 @@ import { JSDOM } from 'jsdom';
 import validator from 'validator';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 import * as Yup from 'yup';
-// import { IContactRequest } from '@/app/interfaces/dao/IContactReuest';
-// import MongoService from '@/app/_lib/mongo-service';
+import { IContactRequest } from '@/app/interfaces/dao/IContactRequest';
+import MongoService from '@/app/_lib/mongo-service';
 import MongoLogger from '@/app/utils/mongoLogger';
 
 // TODO: refactor all this to make look ok
@@ -55,8 +55,6 @@ export async function POST(req: Request) {
                     status: 500,
                 }
             );
-        } else {
-            return Response.json(captchaResponseJson, { status: 200 });
         }
 
         // try {
@@ -70,22 +68,22 @@ export async function POST(req: Request) {
         //     );
         // }
 
-        // const dao: IContactRequest = {
-        //     ...sanitizedPayload,
-        //     createdAt: new Date().toISOString(),
-        // };
-        //
-        // const collection =
-        //     await new MongoService().getCollection<IContactRequest>();
-        //
-        // await collection.insertOne(dao);
+        const dao: IContactRequest = {
+            ...sanitizedPayload,
+            createdAt: new Date().toISOString(),
+        };
 
-        // return Response.json(
-        //     { m: '//_-)' },
-        //     {
-        //         status: 200,
-        //     }
-        // );
+        const collection =
+            await new MongoService().getCollection<IContactRequest>();
+
+        await collection.insertOne(dao);
+
+        return Response.json(
+            { m: '//_-)' },
+            {
+                status: 200,
+            }
+        );
     } catch (e: unknown) {
         const logger = new MongoLogger();
         console.log('error');
