@@ -87,13 +87,13 @@ export async function POST(req: Request) {
         );
     } catch (e: unknown) {
         const logger = new MongoLogger();
-        console.log('error')
+        console.log('error');
         if (e instanceof Yup.ValidationError) {
             await logger.log('error', JSON.stringify(e.errors));
             return Response.json({ errors: e.errors }, { status: 400 });
         }
         if (e instanceof Error) {
-            console.log(e.message)
+            console.log(e.message);
             await logger.log('error', e.message);
             return Response.json(`Something went wrong, try again}`, {
                 status: 500,
