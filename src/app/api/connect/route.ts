@@ -7,7 +7,7 @@ import validator from 'validator';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 import * as Yup from 'yup';
 import { IContactRequest } from '@/app/interfaces/dao/IContactRequest';
-import MongoService from '@/app/_lib/mongo-service';
+// import MongoService from '@/app/_lib/mongo-service';
 import MongoLogger from '@/app/utils/mongoLogger';
 
 // TODO: refactor all this to make look ok
@@ -73,13 +73,13 @@ export async function POST(req: Request) {
             createdAt: new Date().toISOString(),
         };
 
-        const collection =
-            await new MongoService().getCollection<IContactRequest>();
-
-        await collection.insertOne(dao);
+        // const collection =
+        //     await new MongoService().getCollection<IContactRequest>();
+        //
+        // await collection.insertOne(dao);
 
         return Response.json(
-            { m: '//_-)' },
+            { dao },
             {
                 status: 200,
             }
