@@ -1,6 +1,6 @@
 import { IContactForm } from '@/app/interfaces/IContactForm';
 import { formDataToContactForm } from '@/app/utils/mapper';
-import rateLimit from '@/app/utils/rate-limit';
+// import rateLimit from '@/app/utils/rate-limit';
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import validator from 'validator';
@@ -11,10 +11,10 @@ import MongoService from '@/app/_lib/mongo-service';
 import MongoLogger from '@/app/utils/mongoLogger';
 
 // TODO: refactor all this to make look ok
-const limiter = rateLimit({
-    interval: 60 * 1000, // 60 seconds
-    uniqueTokenPerInterval: 20, // Max 20 users per second, but here no unique identifier
-});
+// const limiter = rateLimit({
+//     interval: 60 * 1000, // 60 seconds
+//     uniqueTokenPerInterval: 20, // Max 20 users per second, but here no unique identifier
+// });
 
 const window = new JSDOM('').window;
 const purify = DOMPurify(window);
@@ -58,16 +58,16 @@ export async function POST(req: Request) {
             );
         }
 
-        try {
-            await limiter.check(20, 'CACHE_TOKEN');
-        } catch {
-            return Response.json(
-                'You are sending too many requests. Try again later.',
-                {
-                    status: 429,
-                }
-            );
-        }
+        // try {
+        //     await limiter.check(20, 'CACHE_TOKEN');
+        // } catch {
+        //     return Response.json(
+        //         'You are sending too many requests. Try again later.',
+        //         {
+        //             status: 429,
+        //         }
+        //     );
+        // }
 
         const dao: IContactRequest = {
             ...sanitizedPayload,
