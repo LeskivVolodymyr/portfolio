@@ -6,8 +6,8 @@ import { JSDOM } from 'jsdom';
 import validator from 'validator';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 import * as Yup from 'yup';
-import { IContactRequest } from '@/app/interfaces/dao/IContactReuest';
-import MongoService from '@/app/_lib/mongo-service';
+// import { IContactRequest } from '@/app/interfaces/dao/IContactReuest';
+// import MongoService from '@/app/_lib/mongo-service';
 import MongoLogger from '@/app/utils/mongoLogger';
 
 // TODO: refactor all this to make look ok
@@ -25,7 +25,6 @@ function sanitizeForm(input: IContactForm): IContactForm {
         email: purify.sanitize(validator.normalizeEmail(input.email) || ''),
         subject: purify.sanitize(validator.escape(input.subject)),
         message: purify.sanitize(validator.escape(input.message)),
-        captcha: purify.sanitize(validator.escape(input.captcha!)),
     };
 }
 
@@ -43,7 +42,7 @@ export async function POST(req: Request) {
         });
 
         const captchaResponse = await fetch(
-            `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${sanitizedPayload.captcha}`,
+            `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${requestPayload.captcha}`,
             { method: 'POST' }
         );
 
@@ -56,6 +55,8 @@ export async function POST(req: Request) {
                     status: 500,
                 }
             );
+        } else {
+            return Response.json(captchaResponseJson, { status: 200 });
         }
 
         // try {
@@ -69,22 +70,22 @@ export async function POST(req: Request) {
         //     );
         // }
 
-        const dao: IContactRequest = {
-            ...sanitizedPayload,
-            createdAt: new Date().toISOString(),
-        };
+        // const dao: IContactRequest = {
+        //     ...sanitizedPayload,
+        //     createdAt: new Date().toISOString(),
+        // };
+        //
+        // const collection =
+        //     await new MongoService().getCollection<IContactRequest>();
+        //
+        // await collection.insertOne(dao);
 
-        const collection =
-            await new MongoService().getCollection<IContactRequest>();
-
-        await collection.insertOne(dao);
-
-        return Response.json(
-            { m: '//_-)' },
-            {
-                status: 200,
-            }
-        );
+        // return Response.json(
+        //     { m: '//_-)' },
+        //     {
+        //         status: 200,
+        //     }
+        // );
     } catch (e: unknown) {
         const logger = new MongoLogger();
         console.log('error');
