@@ -7,7 +7,8 @@ import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema
 import * as Yup from 'yup';
 import { IContactRequestDao } from '@/app/interfaces/dao/IContactRequestDao';
 import MongoService from '@/app/_lib/mongo-service';
-import MongoLogger from '@/app/utils/mongoLogger';
+import LoggerFactory from '@/app/utils/logger/LoggerFactory';
+import Logger from '@/app/utils/logger/Logger';
 
 const window = new JSDOM('').window;
 const purify = DOMPurify(window);
@@ -21,9 +22,32 @@ function sanitizeForm(input: IContactForm): IContactForm {
     };
 }
 
+async function isCaptchaValid(
+    logger: Logger,
+    captcha?: string | null
+): Promise<boolean> {
+    const captchaResponse = await fetch(
+        `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecretKey}&response=${captcha}`,
+        { method: 'POST' }
+    );
+
+    const captchaResponseJson = await captchaResponse.json();
+    const isValid = captchaResponseJson.success;
+
+    if (!isValid)
+        await logger.logAsync(
+            'error',
+            `Captcha validation failed. Error codes: ${JSON.stringify(captchaResponseJson['error-codes'])}`
+        );
+
+    return isValid;
+}
+
 const recaptchaSecretKey: string | undefined = process.env.RECAPTCHA_SECRET_KEY;
 
 export async function POST(req: Request) {
+    const logger = LoggerFactory.createMongoLogger();
+
     try {
         const requestPayload: IContactForm = formDataToContactForm(
             await req.formData()
@@ -34,16 +58,11 @@ export async function POST(req: Request) {
             abortEarly: false,
         });
 
-        const captchaResponse = await fetch(
-            `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecretKey}&response=${requestPayload.captcha}`,
-            { method: 'POST' }
-        );
+        const isValid = await isCaptchaValid(logger, requestPayload.captcha);
 
-        const captchaResponseJson = await captchaResponse.json();
-
-        if (!captchaResponseJson.success) {
+        if (!isValid) {
             return Response.json(
-                { error: captchaResponseJson['error-codes'][0] },
+                'Captcha validation failed. Please try again.',
                 {
                     status: 500,
                 }
@@ -63,19 +82,17 @@ export async function POST(req: Request) {
             status: 200,
         });
     } catch (e: unknown) {
-        const logger = new MongoLogger();
         if (e instanceof Yup.ValidationError) {
-            await logger.log('error', JSON.stringify(e.errors));
+            await logger.logAsync('error', JSON.stringify(e.errors));
             return Response.json({ errors: e.errors }, { status: 400 });
         }
         if (e instanceof Error) {
-            console.log(e.message);
-            await logger.log('error', e.message);
-            return Response.json(`Something went wrong, try again}`, {
+            await logger.logAsync('error', e.message);
+            return Response.json(`Something went wrong, try again`, {
                 status: 500,
             });
         } else {
-            await logger.log('error', 'something went wrong');
+            await logger.logAsync('error', 'something went wrong');
             return Response.json('Something went wrong, try again.', {
                 status: 500,
             });

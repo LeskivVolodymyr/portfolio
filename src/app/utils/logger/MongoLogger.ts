@@ -1,13 +1,14 @@
 import { Collection, Document } from 'mongodb';
+import { ILogger } from './ILogger';
 import MongoService from '@/app/_lib/mongo-service';
 
-class MongoLogger {
+class MongoLogger implements ILogger {
     private logsCollectionName: string = 'logs';
     private collection: Collection<Document> | undefined;
     private readonly mongoService: MongoService;
 
-    constructor() {
-        this.mongoService = new MongoService();
+    constructor(mongoService: MongoService) {
+        this.mongoService = mongoService;
     }
 
     private async getCollection() {
@@ -18,7 +19,7 @@ class MongoLogger {
         return this.collection;
     }
 
-    async log(level: string, message: string) {
+    async logAsync(level: string, message: string) {
         const collection = await this.getCollection();
         const logEntry = {
             level,

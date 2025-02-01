@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import React from 'react';
 
 export default function RecaptchaMessage() {
+    const linkClasses = 'underline underline-offset-4 interactive-element';
     return (
         <div className='flex flex-row'>
             <span>
@@ -9,7 +9,7 @@ export default function RecaptchaMessage() {
                 <Link
                     target='_blank'
                     href='https://policies.google.com/privacy'
-                    className='underline underline-offset-4 interactive-element'
+                    className={linkClasses}
                 >
                     Privacy Policy
                 </Link>{' '}
@@ -17,7 +17,7 @@ export default function RecaptchaMessage() {
                 <Link
                     target='_blank'
                     href='https://policies.google.com/terms'
-                    className='underline underline-offset-4 interactive-element'
+                    className={linkClasses}
                 >
                     Terms of Service
                 </Link>{' '}

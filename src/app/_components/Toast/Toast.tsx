@@ -4,7 +4,11 @@ import { useTheme } from '@/app/context/ThemeContext';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
-const Toast = forwardRef<ToastRef, unknown>(function ToastRef(props, ref) {
+export type ToastRef = {
+    show: (message: string, type?: ToastType) => void;
+};
+
+const Toast = forwardRef<ToastRef, unknown>(function InternalToast(_, ref) {
     const { theme } = useTheme();
 
     const show = (message: string, type: ToastType | undefined = 'success') => {

@@ -35,15 +35,17 @@ export default function ContactForm() {
             helpers.setSubmitting(true);
             values.captcha = await recaptchaRef.current?.executeAsync();
             const response = await connect(contactFormToFormData(values));
-            if (response.status === 200) {
-                helpers.resetForm();
-                toastRef.current!.show(
-                    'Your message has been sent successfully!',
-                    'success'
-                );
-            } else {
+
+            if (response.status !== 200) {
                 showErrorMessage();
+                return;
             }
+
+            helpers.resetForm();
+            toastRef.current!.show(
+                'Your message has been sent successfully!',
+                'success'
+            );
         } catch {
             showErrorMessage();
         } finally {
