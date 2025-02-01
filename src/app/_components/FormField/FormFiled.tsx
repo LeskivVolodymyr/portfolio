@@ -25,15 +25,21 @@ const FormField: React.FC<IFormField> = ({
     submitCount,
     autoComplete = 'off',
 }) => {
-    const fieldWrapperClasses = 'flex flex-col gap-1';
-    const fieldClasses = `${styles['input-field']} rounded-md px-4 py-3 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]`;
-    const errorClasses = `${styles.error} text-sm`;
-
-    const showErrors = () => {
+    const isValid = () => {
         const isEmpty = !!value;
         const isEmptyAndNotSubmitted = isEmpty && submitCount === 0;
-        return errors && touched && (submitCount > 0 || isEmptyAndNotSubmitted);
+        return !(
+            errors &&
+            touched &&
+            (submitCount > 0 || isEmptyAndNotSubmitted)
+        );
     };
+
+    const fieldWrapperClasses = 'flex flex-col gap-1';
+    const fieldClasses =
+        `${styles['input-field']} rounded-md px-4 py-3 ` +
+        `${isValid() ? '' : `${styles.invalid}`}`;
+    const errorClasses = `${styles.error} text-sm`;
 
     return (
         <div className={fieldWrapperClasses}>
@@ -49,7 +55,7 @@ const FormField: React.FC<IFormField> = ({
                 className={fieldClasses}
                 autoComplete={autoComplete}
             />
-            {showErrors() && (
+            {!isValid() && (
                 <ErrorMessage
                     className={errorClasses}
                     name={name}
