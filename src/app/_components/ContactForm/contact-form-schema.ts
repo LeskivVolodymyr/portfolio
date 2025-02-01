@@ -10,7 +10,7 @@ const emailValidation = Yup.string()
     .required('Email is required.');
 
 const subjectValidation = Yup.string()
-    .min(10, 'Subject too short (min 10 chars).')
+    .min(2, 'Subject too short (min 2 chars).')
     .max(500, 'Subject too long (max 500 chars).')
     .optional()
     .nullable();

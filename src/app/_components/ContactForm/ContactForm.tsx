@@ -1,23 +1,23 @@
-import React, { useRef } from 'react';
-import {
-    Formik,
-    Form,
-    Field,
-    ErrorMessage,
-    FormikTouched,
-    FormikValues,
-    FormikErrors,
-} from 'formik';
-import styles from './ContactForm.module.scss';
+import React, { RefObject, useRef } from 'react';
+import { Formik, Form, FormikHelpers } from 'formik';
 import Button from '@/app/_components/Button/Button';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 import { IContactForm } from '@/app/interfaces/IContactForm';
 import { connect } from '@/app/_lib/api-client';
 import { contactFormToFormData } from '@/app/utils/mapper';
 import ReCAPTCHA from 'react-google-recaptcha';
+import RecaptchaMessage from '@/app/_components/RecaptchaMessage/RecaptchaMessage';
+import Recaptcha from '@/app/_components/Recaptcha/Recaptcha';
+import FormField from '@/app/_components/FormField/FormFiled';
+import Loader from '@/app/_components/Loader/Loader';
+import Toast from '@/app/_components/Toast/Toast';
 
 export default function ContactForm() {
-    const recaptchaRef = useRef<ReCAPTCHA>(null);
+    const recaptchaRef: RefObject<ReCAPTCHA | null> = useRef<ReCAPTCHA>(null);
+    const toastRef = useRef<{ show: (message: string, type?: string) => void }>(
+        null
+    );
+    const errorMessages = 'Something went wrong. Please try again.';
 
     const initialValues: IContactForm = {
         name: '',
@@ -27,26 +27,33 @@ export default function ContactForm() {
         captcha: '',
     };
 
-    const fieldWrapperClasses = 'flex flex-col gap-1';
-    const fieldClasses = `${styles[`input-field`]} rounded-md px-4 py-3 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]`;
-    const errorClasses = `${styles.error} text-sm`;
-
-    const showErrors = (
-        fieldName: string,
-        errors: FormikErrors<FormikValues>,
-        touched: FormikTouched<FormikValues>,
-        values: FormikValues,
-        submitCount: number
+    const handleSubmit = async (
+        values: IContactForm,
+        helpers: FormikHelpers<IContactForm>
     ) => {
-        const hasError = !!errors[fieldName];
-        const hasTouched = touched[fieldName];
-        const isEmpty = !!values[fieldName];
-        const isEmptyAndNotSubmitted = isEmpty && submitCount === 0;
-        return (
-            hasError &&
-            hasTouched &&
-            (submitCount > 0 || isEmptyAndNotSubmitted)
-        );
+        try {
+            helpers.setSubmitting(true);
+            values.captcha = await recaptchaRef.current?.executeAsync();
+            const response = await connect(contactFormToFormData(values));
+            if (response.status === 200) {
+                helpers.resetForm();
+                toastRef.current!.show(
+                    'Your message has been sent successfully!',
+                    'success'
+                );
+            } else {
+                showErrorMessage();
+            }
+        } catch {
+            showErrorMessage();
+        } finally {
+            helpers.setSubmitting(false);
+            recaptchaRef.current?.reset();
+        }
+    };
+
+    const showErrorMessage = () => {
+        toastRef.current!.show(errorMessages, 'error');
     };
 
     return (
@@ -54,126 +61,56 @@ export default function ContactForm() {
             <Formik
                 initialValues={initialValues}
                 validationSchema={contactFormSchema}
-                onSubmit={async (values, { setSubmitting }) => {
-                    setSubmitting(true);
-                    values.captcha = await recaptchaRef.current?.executeAsync();
-                    const formData: FormData = contactFormToFormData(values);
-                    await connect(formData);
-                    setSubmitting(false);
-                }}
+                onSubmit={handleSubmit}
             >
                 {({ values, errors, touched, isSubmitting, submitCount }) => (
-                    <Form className='flex flex-col gap-4'>
-                        <div className={fieldWrapperClasses}>
-                            <label htmlFor='name'>Name</label>
-                            <Field
-                                type='text'
+                    <>
+                        <Form className='flex flex-col gap-4'>
+                            <FormField
                                 name='name'
-                                id='name'
                                 placeholder='John Doe'
-                                className={fieldClasses}
+                                errors={errors['name']}
+                                touched={touched['name']}
+                                value={values['name']}
+                                submitCount={submitCount}
                             />
-                            {showErrors(
-                                'name',
-                                errors,
-                                touched,
-                                values,
-                                submitCount
-                            ) && (
-                                <ErrorMessage
-                                    className={errorClasses}
-                                    name='name'
-                                    component='div'
-                                />
-                            )}
-                        </div>
-
-                        <div className={fieldWrapperClasses}>
-                            <label htmlFor='email'>Email</label>
-                            <Field
-                                type='text'
+                            <FormField
                                 name='email'
-                                id='email'
+                                type='email'
                                 placeholder='your@email.com'
-                                className={fieldClasses}
+                                errors={errors['email']}
+                                touched={touched['email']}
+                                value={values['email']}
+                                submitCount={submitCount}
+                                autoComplete='on'
                             />
-                            {showErrors(
-                                'email',
-                                errors,
-                                touched,
-                                values,
-                                submitCount
-                            ) && (
-                                <ErrorMessage
-                                    className={errorClasses}
-                                    name='email'
-                                    component='div'
-                                />
-                            )}
-                        </div>
-
-                        <div className={fieldWrapperClasses}>
-                            <label htmlFor='subject'>Subject</label>
-                            <Field
-                                type='text'
+                            <FormField
                                 name='subject'
-                                id='subject'
                                 placeholder='Subject'
-                                className={fieldClasses}
+                                errors={errors['subject']}
+                                touched={touched['subject']}
+                                value={values['subject']}
+                                submitCount={submitCount}
                             />
-                            {showErrors(
-                                'subject',
-                                errors,
-                                touched,
-                                values,
-                                submitCount
-                            ) && (
-                                <ErrorMessage
-                                    className={errorClasses}
-                                    name='subject'
-                                    component='div'
-                                />
-                            )}
-                        </div>
-
-                        <div className={fieldWrapperClasses}>
-                            <label htmlFor='message'>Message</label>
-                            <Field
-                                type='text'
+                            <FormField
                                 name='message'
-                                id='message'
                                 component='textarea'
                                 placeholder='Start typing your message...'
-                                className={`${fieldClasses} h-24 min-h-24`}
+                                errors={errors['message']}
+                                touched={touched['message']}
+                                value={values['message']}
+                                submitCount={submitCount}
                             />
-                            {showErrors(
-                                'message',
-                                errors,
-                                touched,
-                                values,
-                                submitCount
-                            ) && (
-                                <ErrorMessage
-                                    className={errorClasses}
-                                    name='message'
-                                    component='div'
-                                />
-                            )}
-                        </div>
-                        {touched && (
-                            <ReCAPTCHA
-                                sitekey={
-                                    process.env
-                                        .NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''
-                                }
-                                ref={recaptchaRef}
-                                size='invisible'
-                            />
-                        )}
-                        <Button type='submit' disabled={isSubmitting}>
-                            <>Submit</>
-                        </Button>
-                    </Form>
+
+                            <Recaptcha recaptchaRef={recaptchaRef} />
+                            <RecaptchaMessage />
+                            <Button type='submit' disabled={isSubmitting}>
+                                <>Submit</>
+                            </Button>
+                        </Form>
+                        {isSubmitting && <Loader />}
+                        <Toast ref={toastRef} />
+                    </>
                 )}
             </Formik>
         </div>
