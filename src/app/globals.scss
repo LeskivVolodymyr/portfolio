@@ -50,3 +50,12 @@ h6 {
   font-family: fonts.$font-bebas-neue;
   line-height: 1;
 }
+
+a.interactive-element {
+    color: var(--interactive-element-color);
+    text-decoration: none;
+}
+
+.grecaptcha-badge {
+  visibility: hidden;
+}
