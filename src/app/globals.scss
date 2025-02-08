@@ -13,6 +13,7 @@
   --form-error-color: #{colors.$error-color-dark};
   --form-background-color: #{colors.$form-background-color-dark};
   --navbar-background-color: #{colors.$navbar-background-color-dark};
+  --card-background-color: #{colors.$card-background-color-dark};
 }
 
 /* Light theme variables */
@@ -23,6 +24,7 @@
   --form-error-color: #{colors.$error-color-light};
   --form-background-color: #{colors.$form-background-color-light};
   --navbar-background-color: #{colors.$navbar-background-color-light};
+  --card-background-color: #{colors.$card-background-color-light};
 }
 
 html, body {
