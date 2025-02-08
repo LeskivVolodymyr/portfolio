@@ -73,7 +73,7 @@ export default function SkillCarousel() {
             title: '.NET Core',
             description:
                 'A free, cross-platform, open-source developer platform for building many different types of applications.',
-            highlighted: false,
+            highlighted: true,
         },
         {
             iconUrl: 'next-js.svg',
@@ -126,7 +126,7 @@ export default function SkillCarousel() {
                             image={t.iconUrl}
                             description={t.description}
                             title={t.title}
-                            hightlighted={theme === 'dark' && t.highlighted}
+                            highlighted={theme === 'dark' && t.highlighted}
                             key={index}
                         />
                     );
