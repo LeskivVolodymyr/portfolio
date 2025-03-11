@@ -1,7 +1,7 @@
 import Section from '@/app/_components/Section/Section';
 import LetsConnectSection from '@/app/_components/sections/LetsConnectSection/LetsConnectSection';
 import HomeSection from '@/app/_components/sections/HomeSection/HomeSection';
-import SkillCarousel from '@/app/_components/SkillCarousel/SkillCarousel';
+import SkillSection from '@/app/_components/sections/SkillSection/SkillSection';
 
 export default function Page() {
     return (
@@ -9,11 +9,11 @@ export default function Page() {
             <Section id='home'>
                 <HomeSection />
             </Section>
+            <Section id='skills'>
+                <SkillSection />
+            </Section>
             <Section id='lets-connect' bottomSeparator={false}>
                 <LetsConnectSection />
-            </Section>
-            <Section id='skills' bottomSeparator={false}>
-                <SkillCarousel />
             </Section>
         </>
     );
