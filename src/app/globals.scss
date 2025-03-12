@@ -61,3 +61,18 @@ a.interactive-element {
 .grecaptcha-badge {
   visibility: hidden;
 }
+
+// slider
+.slick-slide {
+  height: auto !important;
+}
+
+.slick-track, .slick-slide, .slick-slide > div  {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+
+  & > div {
+    flex: 1;
+  }
+}

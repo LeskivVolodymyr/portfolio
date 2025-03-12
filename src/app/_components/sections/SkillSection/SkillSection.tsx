@@ -1,54 +1,67 @@
-// 'use client';
+'use client';
 
-import Carousel from 'react-multi-carousel';
-import { ResponsiveType } from 'react-multi-carousel/lib/types';
-import 'react-multi-carousel/lib/styles.css';
 import { CarouselCard } from '@/app/_components/CarouselCard/CarouselCard';
 import { useTheme } from '@/app/context/ThemeContext';
 import technologies, { Technology } from './technologies';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider, { Settings } from 'react-slick';
+import styles from './SkillSection.module.scss';
 
 export default function SkillSection() {
     const { theme } = useTheme();
-    const responsive: ResponsiveType = {
-        desktop: {
-            breakpoint: { max: 1920, min: 1024 },
-            items: 4,
-            slidesToSlide: 2,
-        },
-        tablet: {
-            breakpoint: { max: 1024, min: 464 },
-            items: 3,
-            slidesToSlide: 2,
-        },
-        mobile: {
-            breakpoint: { max: 768, min: 0 },
-            items: 2,
-            slidesToSlide: 1,
-        },
+
+    const settings: Settings = {
+        infinite: true,
+        autoplay: true,
+        speed: 1000,
+        slidesToShow: 4,
+        slidesToScroll: 3,
+        pauseOnHover: true,
+        arrows: false,
+        dots: false,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 2,
+                    infinite: true,
+                    dots: true,
+                },
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 2,
+                },
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                },
+            },
+        ],
     };
 
     return (
-        <div className='overflow-visible absolute left-0 w-full'>
-            <Carousel
-                responsive={responsive}
-                infinite={true}
-                autoPlay={true}
-                deviceType={'desktop'}
-                pauseOnHover={true}
-                ssr={true}
-            >
-                {technologies.map((t: Technology, index: number) => {
-                    return (
+        <div className={styles.wrapper}>
+            <div className='w-screen'>
+                <Slider {...settings}>
+                    {technologies.map((t: Technology, index: number) => (
                         <CarouselCard
-                            image={t.iconUrl}
+                            image={t.imageName}
                             description={t.description}
                             title={t.title}
                             highlighted={theme === 'dark' && t.highlighted}
                             key={index + t.title}
                         />
-                    );
-                })}
-            </Carousel>
+                    ))}
+                </Slider>
+            </div>
         </div>
     );
 }

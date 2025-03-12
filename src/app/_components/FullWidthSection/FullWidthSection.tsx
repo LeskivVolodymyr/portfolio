@@ -1,4 +1,6 @@
-import styles from './Section.module.scss';
+'use client';
+
+import styles from './FullWidthSection.module.scss';
 import { ReactElement } from 'react';
 
 interface ISectionProps {
@@ -7,14 +9,14 @@ interface ISectionProps {
     id?: string;
 }
 
-export default function Section({
+export default function FullWidthSection({
     children,
     bottomSeparator = true,
     id,
 }: ISectionProps) {
     return (
-        <section className='max-w-full overflow-visible' id={id}>
-            <div className='md:px-20 md:py-24 py-5'> {children}</div>
+        <section className={`${styles.section}`} id={id}>
+            <div className={`md:py-24 py-5`}> {children}</div>
             {bottomSeparator && (
                 <div aria-hidden className={styles.separator}></div>
             )}
