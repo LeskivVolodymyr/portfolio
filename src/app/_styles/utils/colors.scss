@@ -11,7 +11,7 @@ $red: #FF5555;
 $black: #333333;
 $white: #fffff2;
 $blue: #0056b3;
-$red: #d90202;
+$red-2: #d90202;
 
 
 //  Dark mode
@@ -27,7 +27,7 @@ $card-background-color-dark: $gray;
 $font-color-light: $black;
 $interactive-element-color-light: $blue;
 $background-color-light: $grayish-white;
-$error-color-light: $red;
+$error-color-light: $red-2;
 $form-background-color-light: $white;
 $navbar-background-color-light: color.adjust($background-color-light, $lightness: -3%);
 $card-background-color-light: $white;
