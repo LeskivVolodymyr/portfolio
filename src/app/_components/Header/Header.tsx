@@ -5,7 +5,7 @@
 import { Spin } from 'hamburger-react';
 import styles from './Header.module.scss';
 import ThemeSwitch from '@/app/_components/ThemeSwitch/ThemeSwitch';
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { debounce } from 'next/dist/server/utils';
 
 export default function Header() {
@@ -47,7 +47,7 @@ export default function Header() {
 
     return (
         <header
-            className={`${styles.header} ${isVisible ? 'top-0' : '-top-[100px]'} fixed flex w-full justify-between items-center px-4 lg:px-14 py-6`}
+            className={`${styles.header} ${isVisible ? 'top-0' : '-top-[100px]'} fixed flex w-full justify-between items-center px-4 lg:px-14 lg:py-6 py-3`}
         >
             <div className={`text-3xl ${styles.label}`}>
                 <a href='#home'>VOLODYMYR LESKIV</a>
