@@ -22,12 +22,13 @@ export function CarouselCard({
                     src={`/images/svg/${image}`}
                     width={500}
                     height={500}
-                    alt='typescript'
+                    unoptimized={true}
+                    alt=''
                 />
             </div>
             <div className='text-center mt-4'>
                 <h3 className='text-xl font-semibold'>{title}</h3>
-                <p className='text-gray-500'>{description}</p>
+                <p>{description}</p>
             </div>
         </div>
     );

@@ -24,7 +24,7 @@ export default function HomeSection() {
             <div className='flex-1 mt-7 md:mt-0'>
                 <Image
                     src={image}
-                    alt='Silhouette'
+                    alt=''
                     sizes='(max-width: 747px) 100vw, 600px'
                     width={600}
                 />
