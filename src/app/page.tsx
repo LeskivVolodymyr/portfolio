@@ -4,7 +4,7 @@ import HomeSection from '@/app/_components/sections/HomeSection/HomeSection';
 import SkillSection from '@/app/_components/sections/SkillSection/SkillSection';
 import FullWidthSection from '@/app/_components/SectionFullWidth/SectionFullWidth';
 
-export default async function Page() {
+export default function Page() {
     return (
         <>
             <Section id='home'>
