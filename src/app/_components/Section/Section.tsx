@@ -14,7 +14,7 @@ export default function Section({
 }: ISectionProps) {
     return (
         <section className='max-w-full overflow-visible' id={id}>
-            <div className='md:px-20 md:py-24 py-5'> {children}</div>
+            <div className='md:py-24 py-5'> {children}</div>
             {bottomSeparator && (
                 <div aria-hidden className={styles.separator}></div>
             )}
