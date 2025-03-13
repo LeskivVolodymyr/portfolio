@@ -6,7 +6,6 @@ import technologies, { Technology } from './technologies';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider, { Settings } from 'react-slick';
-import styles from './SkillSection.module.scss';
 
 export default function SkillSection() {
     const { theme } = useTheme();
@@ -48,20 +47,18 @@ export default function SkillSection() {
     };
 
     return (
-        <div className={styles.wrapper}>
-            <div className='w-screen'>
-                <Slider {...settings}>
-                    {technologies.map((t: Technology, index: number) => (
-                        <CarouselCard
-                            image={t.imageName}
-                            description={t.description}
-                            title={t.title}
-                            highlighted={theme === 'dark' && t.isHighlighted}
-                            key={index + t.title}
-                        />
-                    ))}
-                </Slider>
-            </div>
+        <div className='w-screen'>
+            <Slider {...settings}>
+                {technologies.map((t: Technology, index: number) => (
+                    <CarouselCard
+                        image={t.imageName}
+                        description={t.description}
+                        title={t.title}
+                        highlighted={theme === 'dark' && t.isHighlighted}
+                        key={index + t.title}
+                    />
+                ))}
+            </Slider>
         </div>
     );
 }

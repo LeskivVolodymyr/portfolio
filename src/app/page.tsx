@@ -2,7 +2,7 @@ import Section from '@/app/_components/Section/Section';
 import LetsConnectSection from '@/app/_components/sections/LetsConnectSection/LetsConnectSection';
 import HomeSection from '@/app/_components/sections/HomeSection/HomeSection';
 import SkillSection from '@/app/_components/sections/SkillSection/SkillSection';
-import FullWidthSection from '@/app/_components/FullWidthSection/FullWidthSection';
+import FullWidthSection from '@/app/_components/SectionFullWidth/SectionFullWidth';
 
 export default async function Page() {
     return (
