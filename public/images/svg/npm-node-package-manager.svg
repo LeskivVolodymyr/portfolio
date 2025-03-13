@@ -4,7 +4,7 @@
 <svg
    xmlns="http://www.w3.org/2000/svg"
    width="233"
-   height="91"
+   height="233"
    id="svg2"
    version="1.1">
   <defs
@@ -12,7 +12,7 @@
   <g
 
      id="layer1"
-     transform="translate(-109.57142,-485.2193)">
+    transform="translate(-109.57142,-410.2193)">
     <path
        style="fill:#cb3837;fill-opacity:1"
        d="m 174.4429,576.2193 0,-13.01931 -64.87148,0 1.9e-4,-77.98069 233.35644,0 -1.9e-4,77.98069 -116.67804,0 0,13.01931 z"

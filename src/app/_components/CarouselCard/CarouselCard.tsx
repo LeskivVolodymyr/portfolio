@@ -16,7 +16,7 @@ export function CarouselCard({
 }: ICarouselCardProps) {
     return (
         <div className='bg-card-background-color rounded-lg shadow-lg p-4 h-full mx-4'>
-            <div className={`flex justify-center`}>
+            <div className='flex justify-center'>
                 <Image
                     className={`w-32 h-32 p-6 ${highlighted ? styles.highlight : ''}`}
                     src={`/images/svg/${image}`}
