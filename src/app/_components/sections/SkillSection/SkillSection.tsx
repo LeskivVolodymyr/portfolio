@@ -48,6 +48,11 @@ export default function SkillSection() {
 
     return (
         <div className='w-screen'>
+            <div className='flex flex-col mb-4 px-4 max-w-[1920px]'>
+                <h2 className='flex justify-center text-6xl'>
+                    Technologies I Work With
+                </h2>
+            </div>
             <Slider {...settings}>
                 {technologies.map((t: Technology, index: number) => (
                     <CarouselCard
@@ -59,6 +64,12 @@ export default function SkillSection() {
                     />
                 ))}
             </Slider>
+            <div className='flex flex-col pt-4 px-4 max-w-[1920px]'>
+                <span className='flex justify-center'>
+                    The list is not full, ask what you need and we will figure
+                    out what tech are the best for your requirements.
+                </span>
+            </div>
         </div>
     );
 }

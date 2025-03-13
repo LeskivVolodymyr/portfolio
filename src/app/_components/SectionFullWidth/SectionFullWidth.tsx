@@ -13,8 +13,8 @@ export default function SectionFullWidth({
     id,
 }: ISectionFullWidthProps) {
     return (
-        <section className={`${styles.section}`} id={id}>
-            <div className={`md:py-24 py-5`}> {children}</div>
+        <section className={styles.section} id={id}>
+            <div className='md:py-24 py-5'> {children}</div>
             {bottomSeparator && (
                 <div aria-hidden className={styles.separator}></div>
             )}
