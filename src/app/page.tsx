@@ -2,7 +2,7 @@ import Section from '@/app/_components/Section/Section';
 import LetsConnectSection from '@/app/_components/sections/LetsConnectSection/LetsConnectSection';
 import HomeSection from '@/app/_components/sections/HomeSection/HomeSection';
 import SkillSection from '@/app/_components/sections/SkillSection/SkillSection';
-import FullWidthSection from '@/app/_components/SectionFullWidth/SectionFullWidth';
+import SectionFullWidth from '@/app/_components/SectionFullWidth/SectionFullWidth';
 
 export default function Page() {
     return (
@@ -10,9 +10,9 @@ export default function Page() {
             <Section id='home'>
                 <HomeSection />
             </Section>
-            <FullWidthSection id='skills'>
+            <SectionFullWidth id='skills'>
                 <SkillSection />
-            </FullWidthSection>
+            </SectionFullWidth>
             <Section id='lets-connect' bottomSeparator={false}>
                 <LetsConnectSection />
             </Section>
