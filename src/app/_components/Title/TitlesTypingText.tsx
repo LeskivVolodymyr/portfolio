@@ -9,8 +9,6 @@ export default function TitlesTypingText() {
             sequence={[
                 'Full-stack developer',
                 1000,
-                'Innovative thinker',
-                1000,
                 'Web developer',
                 1000,
                 'Front-end developer',
@@ -18,6 +16,8 @@ export default function TitlesTypingText() {
                 'Back-end developer',
                 1000,
                 'Creative coder',
+                1000,
+                'Innovative thinker',
                 1000,
                 'Software engineer',
                 1000,

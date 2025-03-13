@@ -19,7 +19,7 @@ export default function RootLayout({
             <body>
                 <ThemeProvider>
                     <Header />
-                    <div className='flex w-full justify-center'>
+                    <div className='flex w-full justify-center relative'>
                         <main className='px-4'>{children}</main>
                     </div>
                 </ThemeProvider>

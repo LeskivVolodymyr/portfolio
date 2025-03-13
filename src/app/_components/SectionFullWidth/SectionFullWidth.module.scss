@@ -1,0 +1,9 @@
+@use 'src/app/_styles/utils/mixins' as mixins;
+
+.section {
+  margin-left: -50vw;
+}
+
+.separator {
+  @include mixins.section-separator;
+}

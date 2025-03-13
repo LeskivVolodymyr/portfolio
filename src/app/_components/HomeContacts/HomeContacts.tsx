@@ -50,7 +50,7 @@ export default function HomeContacts() {
     };
 
     return (
-        <div className='flex flex-col md:flex-row gap-4'>
+        <div className='flex flex-col lg:flex-row gap-4'>
             <ContactMeButton {...contactMeButtonProps} />
             <div className='flex gap-4 justify-center'>
                 <LinkedInSocialLink {...linkedInSocialLinkProps} />

@@ -11,7 +11,7 @@ export default function HomeSection() {
     const { theme } = useTheme();
     const image = theme === 'light' ? silhouette : silhouetteDark;
     return (
-        <div className='flex flex-col place-content-center flex-wrap md:flex-row  lg:pt-24 pt-36'>
+        <div className='flex flex-col place-content-center flex-wrap md:flex-row lg:pt-11 md:pt-0 pt-32 gap-1'>
             <div className='flex flex-col self-center flex-1'>
                 <h1 className='text-7xl'>
                     HI, I AM <br /> VOLODYMYR LESKIV.
@@ -24,8 +24,8 @@ export default function HomeSection() {
             <div className='flex-1 mt-7 md:mt-0'>
                 <Image
                     src={image}
-                    alt='Silhouette'
-                    sizes='(max-width: 768px) 100vw, 600px'
+                    alt=''
+                    sizes='(max-width: 747px) 100vw, 600px'
                     width={600}
                 />
             </div>

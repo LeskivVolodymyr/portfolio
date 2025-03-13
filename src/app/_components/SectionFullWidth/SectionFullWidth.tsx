@@ -1,19 +1,22 @@
-import styles from './Section.module.scss';
+import styles from './SectionFullWidth.module.scss';
 import { ReactElement } from 'react';
 
-interface ISectionProps {
+interface ISectionFullWidthProps {
     children: ReactElement;
     bottomSeparator?: boolean;
     id?: string;
 }
 
-export default function Section({
+export default function SectionFullWidth({
     children,
     bottomSeparator = true,
     id,
-}: ISectionProps) {
+}: ISectionFullWidthProps) {
     return (
-        <section className='max-w-full overflow-visible' id={id}>
+        <section
+            className={`${styles.section} relative w-screen left-1/2`}
+            id={id}
+        >
             <div className='md:py-24 py-5'> {children}</div>
             {bottomSeparator && (
                 <div aria-hidden className={styles.separator}></div>
