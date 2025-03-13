@@ -39,7 +39,7 @@ export default function Header() {
     const mobileNavigation = isOpen
         ? `${styles['mobile-navigation']} text-2xl`
         : 'hidden lg:flex';
-    const listClasses = `flex flex-col lg:flex-row gap-x-8 gap-y-4 items-center justify-center w-full  top-[90px] left-0 absolute lg:static ${mobileNavigation}`;
+    const listClasses = `flex flex-col lg:flex-row gap-x-8 gap-y-4 items-center justify-center w-full  top-[72px] left-0 absolute lg:static ${mobileNavigation}`;
 
     const handleClick = () => {
         if (isOpen) setIsOpen(false);
