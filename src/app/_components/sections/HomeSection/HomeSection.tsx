@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import HomeContacts from '@/app/_components/HomeContacts/HomeContacts';
-import silhouette from '../../../../../public/images/silhouette-v2.png';
-import silhouetteDark from '../../../../../public/images/silhouette-dark-v2.png';
+import silhouette from '../../../../../public/images/silhouette.png';
+import silhouetteDark from '../../../../../public/images/silhouette-dark.png';
 import Titles from '@/app/_components/Title/Titles';
 import { useTheme } from '@/app/context/ThemeContext';
 
@@ -25,7 +25,7 @@ export default function HomeSection() {
                 <Image
                     src={image}
                     alt='Silhouette'
-                    sizes='(max-width: 768px) 100vw, 600px'
+                    sizes='(max-width: 747px) 100vw, 600px'
                     width={600}
                 />
             </div>
