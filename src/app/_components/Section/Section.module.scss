@@ -1,15 +1,5 @@
+@use 'src/app/_styles/utils/mixins' as mixins;
+
 .separator {
-    height: 1px;
-    width: 100vw;
-    margin-left: -50vw;
-    left: 50%;
-    position: relative;
-    background: linear-gradient(
-        to right,
-        transparent 0%,
-        #f8f8f2 45%,
-        #f8f8f2 55%,
-        transparent 100%
-    );
-    animation: expandLine 1s ease-out forwards;
+    @include mixins.section-separator;
 }

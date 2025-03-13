@@ -56,7 +56,7 @@ export default function SkillSection() {
                             image={t.imageName}
                             description={t.description}
                             title={t.title}
-                            highlighted={theme === 'dark' && t.highlighted}
+                            highlighted={theme === 'dark' && t.isHighlighted}
                             key={index + t.title}
                         />
                     ))}
