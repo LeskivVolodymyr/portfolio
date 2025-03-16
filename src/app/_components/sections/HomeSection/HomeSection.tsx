@@ -21,11 +21,11 @@ export default function HomeSection() {
                 </div>
                 <HomeContacts />
             </div>
-            <div className='flex-1 mt-7 md:mt-0'>
+            <div className='flex flex-row flex-1 justify-end mt-7 md:mt-0'>
                 <Image
                     src={image}
                     alt=''
-                    sizes='(max-width: 747px) 100vw, 600px'
+                    sizes='(max-width: 767px) 100vw, 600px'
                     width={600}
                 />
             </div>
