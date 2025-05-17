@@ -9,6 +9,7 @@ import { IContactRequestDao } from '@/app/interfaces/dao/IContactRequestDao';
 import MongoService from '@/app/_lib/mongo-service';
 import LoggerFactory from '@/app/utils/logger/LoggerFactory';
 import Logger from '@/app/utils/logger/Logger';
+import sendTelegramMessage from '@/app/_lib/telegram-client';
 
 const window = new JSDOM('').window;
 const purify = DOMPurify(window);
@@ -74,6 +75,8 @@ export async function POST(req: Request) {
             createdAt: new Date().toISOString(),
         };
 
+        await sendTelegramMessage(dao, logger);
+
         const service = new MongoService();
         const collection = await service.getCollection<IContactRequestDao>();
         await collection.insertOne(dao);
@@ -87,7 +90,7 @@ export async function POST(req: Request) {
             return Response.json({ errors: e.errors }, { status: 400 });
         }
         if (e instanceof Error) {
-            await logger.logAsync('error', e.message);
+            await logger.logAsync('error', String(e));
             return Response.json(`Something went wrong, try again`, {
                 status: 500,
             });
