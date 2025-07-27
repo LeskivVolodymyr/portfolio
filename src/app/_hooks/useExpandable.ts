@@ -1,13 +1,13 @@
 import { useState, useRef, useCallback } from 'react';
 
-export function useExpandable(delay = 1500) {
+export function useExpandable(autoexpandDelay = 1500) {
     const [expanded, setExpanded] = useState(false);
     const [isAutoCollapse, setIsAutoCollapse] = useState(true);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleMouseEnter = useCallback(() => {
-        timerRef.current = setTimeout(() => setExpanded(true), delay);
-    }, [delay]);
+        timerRef.current = setTimeout(() => setExpanded(true), autoexpandDelay);
+    }, [autoexpandDelay]);
 
     const handleMouseLeave = useCallback(() => {
         if (timerRef.current) clearTimeout(timerRef.current);

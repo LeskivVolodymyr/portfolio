@@ -64,6 +64,11 @@ export default function Header() {
                         </a>
                     </li>
                     <li>
+                        <a onClick={handleClick} href='#my-experience'>
+                            Experience
+                        </a>
+                    </li>
+                    <li>
                         <a onClick={handleClick} href='#lets-connect'>
                             Contact
                         </a>
