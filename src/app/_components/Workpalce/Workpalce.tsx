@@ -21,7 +21,7 @@ export default function Workplace({ workplace }: { workplace: WorkPlaceItem }) {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <div className='flex md:flex-row flex-col justify-between'>
+            <div className='flex lg:flex-row flex-col justify-between'>
                 <h3 className='text-2xl'>{workplace.title}</h3>
                 <div className='flex'>
                     <span>
