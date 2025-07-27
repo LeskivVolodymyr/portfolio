@@ -19,7 +19,7 @@ export default function ContactMeButton({
         <Button
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            onclick={onContactMeClick}
+            onClick={onContactMeClick}
         >
             <span className='flex'>
                 CONTACT ME
