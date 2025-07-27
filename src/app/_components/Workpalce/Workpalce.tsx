@@ -1,6 +1,10 @@
+'use client';
+
 import { WorkPlaceItem } from '@/app/_components/sections/MyExperienceSection/work-history';
 import { differenceInMonths, differenceInYears } from 'date-fns';
 import styles from './Workplace.module.scss';
+import { useExpandable } from '@/app/_hooks/useExpandable';
+import Button from '@/app/_components/Button/Button';
 
 export default function Workplace({ workplace }: { workplace: WorkPlaceItem }) {
     const from = workplace.from;
@@ -8,8 +12,15 @@ export default function Workplace({ workplace }: { workplace: WorkPlaceItem }) {
     const years = differenceInYears(to, from);
     const months = differenceInMonths(to, from) % 12;
 
+    const { expanded, handleMouseEnter, handleMouseLeave, handleToggle } =
+        useExpandable();
+
     return (
-        <div className='flex flex-col'>
+        <div
+            className={`max-w-screen-sm flex flex-col bg-card-background-color p-6 rounded-lg shadow-lg ${styles.expandable} ${expanded ? styles.expanded : ''}`}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
             <div className='flex md:flex-row flex-col justify-between'>
                 <h3 className='text-2xl'>{workplace.title}</h3>
                 <div className='flex'>
@@ -35,16 +46,51 @@ export default function Workplace({ workplace }: { workplace: WorkPlaceItem }) {
                     </span>
                 </div>
             </div>
-            <a
-                href={workplace.companyUrl}
-                target='_blank'
-                className={`${styles.link} underline underline-offset-4`}
-            >
-                {workplace.company}
-            </a>
-            <p className='mt-2  text-justify md:text-left'>
+            <div className='flex items-center justify-between mt-2'>
+                <a
+                    href={workplace.companyUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className={`${styles.link} underline underline-offset-4 text-blue-600 hover:text-blue-800 font-medium`}
+                >
+                    {workplace.company}
+                </a>
+            </div>
+            {workplace.techStack && (
+                <p className='mt-2'>
+                    <strong>Tech Stack:</strong> {workplace.techStack}
+                </p>
+            )}
+            <p className='mt-4 text-justify md:text-left'>
                 {workplace.description}
             </p>
+            <div
+                className={`${styles.details} ${expanded ? styles.expanded : ''}`}
+            >
+                <div className='mt-4'>
+                    <strong>Responsibilities:</strong>
+                    <ul className='list-disc list-inside '>
+                        {workplace.responsibilities.map((item, idx) => (
+                            <li key={idx}>{item}</li>
+                        ))}
+                    </ul>
+                </div>
+
+                {workplace.achievements &&
+                    workplace.achievements.length > 0 && (
+                        <div className='mt-4'>
+                            <strong>Achievements:</strong>
+                            <ul className='list-disc list-inside '>
+                                {workplace.achievements.map((item, idx) => (
+                                    <li key={idx}>{item}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+            </div>
+            <Button onClick={handleToggle} className='mt-4'>
+                <>{expanded ? 'Hide details' : 'Show details'}</>
+            </Button>
         </div>
     );
 }

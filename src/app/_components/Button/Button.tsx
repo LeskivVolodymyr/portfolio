@@ -7,7 +7,8 @@ export interface IButtonProps {
     type?: 'button' | 'submit' | 'reset';
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
-    onclick?: () => void;
+    onClick?: () => void;
+    className?: string;
 }
 
 export default function Button({
@@ -16,9 +17,10 @@ export default function Button({
     type = 'button',
     onMouseEnter,
     onMouseLeave,
-    onclick,
+    onClick,
+    className = '',
 }: IButtonProps) {
-    const buttonClasses = `flex justify-center text-base font-bold px-5 py-4 rounded-full ${styles.button}`;
+    const buttonClasses = `flex justify-center text-base font-bold px-5 py-4 rounded-full ${styles.button} ${className}`;
 
     return (
         <button
@@ -28,7 +30,7 @@ export default function Button({
             onTouchEnd={onMouseLeave}
             onFocus={onMouseEnter}
             onBlur={onMouseLeave}
-            onClick={onclick}
+            onClick={onClick}
             className={buttonClasses}
             disabled={disabled}
             type={type}
