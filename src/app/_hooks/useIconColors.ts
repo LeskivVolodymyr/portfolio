@@ -2,23 +2,25 @@ import { useEffect, useState } from 'react';
 import { getCssVariable } from '@/app/utils/getCssVariable';
 import { useTheme } from '@/app/context/ThemeContext';
 
-export function useIconColors() {
-    const defaultIconColor = '#333333';
-    const defaultIconHoverColor = '#282a36';
-    const defaultIconInteractiveColor = '#50fa7b';
+const defaultColors = {
+    iconColor: '#333333',
+    iconHoverColor: '#282a36',
+    iconInteractiveColor: '#50fa7b',
+};
 
+export function useIconColors() {
     const { theme } = useTheme();
-    const [iconColor, setIconColor] = useState(defaultIconColor);
-    const [iconHoverColor, setIconHoverColor] = useState(defaultIconHoverColor);
-    const [iconInteractiveColor, setIconInteractiveColor] = useState(
-        defaultIconInteractiveColor
-    );
+    const [colors, setColors] = useState(defaultColors);
 
     useEffect(() => {
-        setIconColor(getCssVariable('--font-color'));
-        setIconHoverColor(getCssVariable('--background-color'));
-        setIconInteractiveColor(getCssVariable('--interactive-element-color'));
+        const newColors = {
+            iconColor: getCssVariable('--font-color'),
+            iconHoverColor: getCssVariable('--background-color'),
+            iconInteractiveColor: getCssVariable('--interactive-element-color'),
+        };
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setColors(newColors);
     }, [theme]);
 
-    return { iconColor, iconHoverColor, iconInteractiveColor };
+    return colors;
 }

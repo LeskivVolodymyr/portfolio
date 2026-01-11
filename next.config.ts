@@ -1,22 +1,24 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
+import path from 'path';
 import { PHASE_DEVELOPMENT_SERVER } from 'next/constants';
 import type { NextConfig } from 'next';
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default (phase: string): NextConfig => {
+function config (phase: string): NextConfig  {
     const isDev = phase === PHASE_DEVELOPMENT_SERVER;
+    const projectRoot = path.resolve(__dirname);
 
     return {
         assetPrefix: isDev ? undefined : '/',
-        webpack: (config: any) => {
-            if (isDev) {
+        turbopack: { root: projectRoot } as any,
+        webpack: (config: any, { dev }: any) => {
+            if (isDev || dev) {
                 config.watchOptions = {
                     poll: 1000,
                     aggregateTimeout: 300,
                 };
             }
-
             return config;
         },
     };
-};
+}
+
+export default config;

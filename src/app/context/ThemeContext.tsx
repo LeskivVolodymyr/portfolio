@@ -27,6 +27,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         ).matches;
 
         if (storedTheme) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setTheme(storedTheme);
             if (storedTheme === 'light')
                 document.documentElement.classList.add('light');
