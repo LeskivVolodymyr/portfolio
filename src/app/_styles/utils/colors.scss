@@ -13,21 +13,22 @@ $white: #fffff2;
 $blue: #0056b3;
 $red-2: #d90202;
 
-
 //  Dark mode
-$font-color-dark: $grayish-white;
-$interactive-element-color-dark: $green;
-$background-color-dark: $dark-grayish-blue;
-$error-color-dark: $red;
-$form-background-color-dark: $gray;
-$navbar-background-color-dark: color.adjust($background-color-dark, $lightness: -3%);
-$card-background-color-dark: $gray;
+:root {
+  --font-color-dark: #{$grayish-white};
+  --interactive-element-color-dark: #{$green};
+  --background-color-dark: #{$dark-grayish-blue};
+  --error-color-dark: #{$red};
+  --form-background-color-dark: #{$gray};
+  --navbar-background-color-dark: #{color.adjust($dark-grayish-blue, $lightness: -3%)};
+  --card-background-color-dark: #{$gray};
 
-//  Light mode
-$font-color-light: $black;
-$interactive-element-color-light: $blue;
-$background-color-light: $grayish-white;
-$error-color-light: $red-2;
-$form-background-color-light: $white;
-$navbar-background-color-light: color.adjust($background-color-light, $lightness: -3%);
-$card-background-color-light: $white;
+  //  Light mode
+  --font-color-light: #{$black};
+  --interactive-element-color-light: #{$blue};
+  --background-color-light: #{$grayish-white};
+  --error-color-light: #{$red-2};
+  --form-background-color-light: #{$white};
+  --navbar-background-color-light: #{color.adjust($grayish-white, $lightness: -3%)};
+  --card-background-color-light: #{$white};
+}
