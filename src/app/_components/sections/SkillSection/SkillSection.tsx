@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CarouselCard } from '@/app/_components/CarouselCard/CarouselCard';
 import { useTheme } from '@/app/context/ThemeContext';
 import technologies, { Technology } from './technologies';
@@ -10,15 +10,24 @@ import Slider, { Settings } from 'react-slick';
 
 export default function SkillSection() {
     const { theme } = useTheme();
-
-    const [windowWidth, setWindowWidth] = useState<number>(
-        typeof window !== 'undefined' ? window.innerWidth : 0
-    );
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [containerWidth, setContainerWidth] = useState<number>(0);
 
     useEffect(() => {
-        const onResize = () => setWindowWidth(window.innerWidth);
-        window.addEventListener('resize', onResize);
-        return () => window.removeEventListener('resize', onResize);
+        const container = containerRef.current;
+        if (!container) return;
+
+        const observer = new ResizeObserver((entries) => {
+            if (entries[0]) {
+                setContainerWidth(entries[0].contentRect.width);
+            }
+        });
+
+        observer.observe(container);
+
+        return () => {
+            observer.disconnect();
+        };
     }, []);
 
     const settings: Settings = {
@@ -56,23 +65,25 @@ export default function SkillSection() {
     };
 
     return (
-        <div className='w-full'>
+        <div className='w-full' ref={containerRef}>
             <div className='flex flex-col mb-4 px-4'>
                 <h2 className='flex justify-center text-6xl'>
                     Technologies I Work With
                 </h2>
             </div>
-            <Slider key={windowWidth} {...settings}>
-                {technologies.map((t: Technology, index: number) => (
-                    <CarouselCard
-                        image={t.imageName}
-                        description={t.description}
-                        title={t.title}
-                        highlighted={theme === 'dark' && t.isHighlighted}
-                        key={index + t.title}
-                    />
-                ))}
-            </Slider>
+            {containerWidth > 0 && (
+                <Slider key={containerWidth} {...settings}>
+                    {technologies.map((t: Technology, index: number) => (
+                        <CarouselCard
+                            image={t.imageName}
+                            description={t.description}
+                            title={t.title}
+                            highlighted={theme === 'dark' && t.isHighlighted}
+                            key={index + t.title}
+                        />
+                    ))}
+                </Slider>
+            )}
             <div className='flex flex-col pt-4 px-4'>
                 <span className='flex justify-center'>
                     The list is not full, ask what you need and we will figure
