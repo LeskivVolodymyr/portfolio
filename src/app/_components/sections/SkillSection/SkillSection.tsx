@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { CarouselCard } from '@/app/_components/CarouselCard/CarouselCard';
 import { useTheme } from '@/app/context/ThemeContext';
 import technologies, { Technology } from './technologies';
@@ -9,6 +10,16 @@ import Slider, { Settings } from 'react-slick';
 
 export default function SkillSection() {
     const { theme } = useTheme();
+
+    const [windowWidth, setWindowWidth] = useState<number>(
+        typeof window !== 'undefined' ? window.innerWidth : 0
+    );
+
+    useEffect(() => {
+        const onResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     const settings: Settings = {
         infinite: true,
@@ -45,13 +56,13 @@ export default function SkillSection() {
     };
 
     return (
-        <div className='w-screen'>
+        <div className='w-full'>
             <div className='flex flex-col mb-4 px-4'>
                 <h2 className='flex justify-center text-6xl'>
                     Technologies I Work With
                 </h2>
             </div>
-            <Slider {...settings}>
+            <Slider key={windowWidth} {...settings}>
                 {technologies.map((t: Technology, index: number) => (
                     <CarouselCard
                         image={t.imageName}
