@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CarouselCard } from '@/app/_components/CarouselCard/CarouselCard';
 import { useTheme } from '@/app/context/ThemeContext';
 import technologies, { Technology } from './technologies';
@@ -10,15 +10,30 @@ import Slider, { Settings } from 'react-slick';
 
 export default function SkillSection() {
     const { theme } = useTheme();
-
-    const [windowWidth, setWindowWidth] = useState<number>(
-        typeof window !== 'undefined' ? window.innerWidth : 0
-    );
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [containerWidth, setContainerWidth] = useState<number>(0);
 
     useEffect(() => {
-        const onResize = () => setWindowWidth(window.innerWidth);
-        window.addEventListener('resize', onResize);
-        return () => window.removeEventListener('resize', onResize);
+        if (!containerRef.current) return;
+
+        const el = containerRef.current;
+        let ro: ResizeObserver | null = null;
+
+        const updateWidth = () => setContainerWidth(Math.round(el.getBoundingClientRect().width));
+
+        if (typeof ResizeObserver !== 'undefined') {
+            ro = new ResizeObserver(() => updateWidth());
+            ro.observe(el);
+        } else {
+            updateWidth();
+            window.addEventListener('resize', updateWidth);
+        }
+        updateWidth();
+
+        return () => {
+            if (ro) ro.disconnect();
+            else window.removeEventListener('resize', updateWidth);
+        };
     }, []);
 
     const settings: Settings = {
@@ -56,13 +71,13 @@ export default function SkillSection() {
     };
 
     return (
-        <div className='w-full'>
+        <div className='w-full' ref={containerRef}>
             <div className='flex flex-col mb-4 px-4'>
                 <h2 className='flex justify-center text-6xl'>
                     Technologies I Work With
                 </h2>
             </div>
-            <Slider key={windowWidth} {...settings}>
+            <Slider key={containerWidth} {...settings}>
                 {technologies.map((t: Technology, index: number) => (
                     <CarouselCard
                         image={t.imageName}
