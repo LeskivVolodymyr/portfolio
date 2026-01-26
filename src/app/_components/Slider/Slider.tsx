@@ -218,7 +218,7 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
             >
                 {allSlides.map((child, index) => (
                     <div
-                        ref={el => slideRefs.current[index] = el}
+                        ref={el => { slideRefs.current[index] = el; }}
                         key={`slide-${index}`}
                         className="flex-shrink-0 h-full"
                         style={{ width: `${100 / slidesToShow}%` }}
