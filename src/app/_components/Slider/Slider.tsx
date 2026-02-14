@@ -31,76 +31,124 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
     const [slidesToScrollCount, setSlidesToScrollCount] = useState(settings.slidesToScroll || 1);
     const [isPaused, setIsPaused] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
-    const [offset, setOffset] = useState(0);
-    const [sliderHeight, setSliderHeight] = useState<number | undefined>(undefined); // ?????
 
-    const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
-    const sliderRef = useRef<HTMLDivElement>(null);
+    const bufferSize = Math.max(slidesToScrollCount, slidesToShowCount) + 1;
 
-    // Build array with all unique children plus buffer for infinite scroll
+    const [offset, setOffset] = useState<number>(bufferSize);
+    const [sliderHeight, setSliderHeight] = useState<number | undefined>(undefined);
+
+    const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const sliderRef = useRef<HTMLDivElement | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const transitionGuardRef = useRef(false);
+
     const buildAllSlides = useCallback(() => {
         const allSlides: ReactNode[] = [];
         const preloadCount = 1;
-        const bufferSize = Math.max(slidesToScrollCount,  slidesToShowCount) + preloadCount;
+        const calcBuffer = Math.max(slidesToScrollCount, slidesToShowCount) + preloadCount;
 
-
-        allSlides.push(...getFromEnd(bufferSize, children));
-
-        // Add all original children
+        allSlides.push(...getFromEnd(calcBuffer, children));
         allSlides.push(...children);
-
-        allSlides.push(...getFromStart(bufferSize, children))
-
-        console.log(allSlides);
+        allSlides.push(...getFromStart(calcBuffer, children));
 
         return allSlides;
     }, [children, slidesToShowCount, slidesToScrollCount]);
 
     const [allSlides, setAllSlides] = useState<ReactNode[]>(() => buildAllSlides());
 
-    const currentIndexRef = useRef(slidesToShowCount); // Start after front buffer
+    const currentIndexRef = useRef<number>(bufferSize);
 
     useEffect(() => {
         setAllSlides(buildAllSlides());
-        currentIndexRef.current = slidesToShowCount; // Reset to first real slide
-        setOffset(slidesToShowCount);
-    }, [buildAllSlides]);
+        currentIndexRef.current = bufferSize;
+        setOffset(bufferSize);
+        slideRefs.current = [];
+    }, [buildAllSlides, slidesToShowCount, bufferSize]);
 
-    const getAdjustedSpeed = () => {
-        const baseSpeed = settings.speed || 3000;
-        return baseSpeed / slidesToShowCount;
-    };
+    const getAdjustedSpeed = useCallback(() => {
+        return settings.speed ?? 3000;
+    }, [settings.speed]);
 
     const handleNext = useCallback(() => {
         if (isTransitioning) return;
-
+        if (children.length === 0) return;
         setIsTransitioning(true);
+        transitionGuardRef.current = true;
         currentIndexRef.current += slidesToScrollCount;
         setOffset(currentIndexRef.current);
-    }, [isTransitioning, slidesToScrollCount]);
+    }, [isTransitioning, slidesToScrollCount, children.length]);
 
-    const handleTransitionEnd = () => {
+    const handlePrev = useCallback(() => {
+        if (isTransitioning) return;
+        if (children.length === 0) return;
+        setIsTransitioning(true);
+        transitionGuardRef.current = true;
+        currentIndexRef.current -= slidesToScrollCount;
+        setOffset(currentIndexRef.current);
+    }, [isTransitioning, slidesToScrollCount, children.length]);
+
+    const transitionTimeoutRef = useRef<number | null>(null);
+
+    useEffect(() => {
         if (!isTransitioning) return;
+        if (transitionTimeoutRef.current) {
+            clearTimeout(transitionTimeoutRef.current);
+            transitionTimeoutRef.current = null;
+        }
+        const t = window.setTimeout(() => {
+            if (transitionGuardRef.current) {
+                transitionGuardRef.current = false;
+                setIsTransitioning(false);
+            }
+        }, getAdjustedSpeed() + 120);
 
-        setIsTransitioning(false);
+        transitionTimeoutRef.current = t;
 
-        // Reset when we've used up the buffer (ensure we always have next slides ready)
-        if (currentIndexRef.current >= slidesToShowCount + children.length) {
+        return () => {
+            if (transitionTimeoutRef.current) {
+                clearTimeout(transitionTimeoutRef.current);
+                transitionTimeoutRef.current = null;
+            }
+        };
+    }, [isTransitioning, getAdjustedSpeed]);
+
+    const handleTransitionEnd = useCallback((e?: React.TransitionEvent<HTMLDivElement>) => {
+        if (e && e.propertyName !== 'transform') return;
+
+        if (children.length === 0) {
+            transitionGuardRef.current = false;
+            setIsTransitioning(false);
+            return;
+        }
+
+        const bufferSizeLocal = Math.max(slidesToScrollCount, slidesToShowCount) + 1;
+
+        if (currentIndexRef.current >= bufferSizeLocal + children.length) {
             requestAnimationFrame(() => {
-                // Reset to the equivalent position in the original slides
-                const positionInCycle = (currentIndexRef.current - slidesToShowCount) % children.length;
-                currentIndexRef.current = slidesToShowCount + positionInCycle;
-                setOffset(slidesToShowCount + positionInCycle);
+                const positionInCycle = (currentIndexRef.current - bufferSizeLocal) % children.length;
+                currentIndexRef.current = bufferSizeLocal + positionInCycle;
+                setOffset(currentIndexRef.current);
             });
         }
-    };
 
-    // Measure height based on all slides
+        if (currentIndexRef.current < bufferSizeLocal) {
+            requestAnimationFrame(() => {
+                const raw = currentIndexRef.current - bufferSizeLocal;
+                const positionInCycle = ((raw % children.length) + children.length) % children.length;
+                currentIndexRef.current = bufferSizeLocal + positionInCycle;
+                setOffset(currentIndexRef.current);
+            });
+        }
+
+        transitionGuardRef.current = false;
+        setIsTransitioning(false);
+    }, [children.length, slidesToScrollCount, slidesToShowCount]);
+
     useEffect(() => {
         const measureHeight = () => {
             const heights = slideRefs.current
                 .filter(Boolean)
-                .map(el => el!.getBoundingClientRect().height);
+                .map((el) => el!.getBoundingClientRect().height);
 
             if (heights.length > 0) {
                 setSliderHeight(Math.max(...heights));
@@ -120,7 +168,8 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         const handleResize = () => {
             const width = window.innerWidth;
             const responsiveSettings = settings.responsive
-                ?.sort((a, b) => a.breakpoint - b.breakpoint)
+                ?.slice()
+                .sort((a, b) => a.breakpoint - b.breakpoint)
                 .find((item) => width <= item.breakpoint);
 
             if (responsiveSettings) {
@@ -144,22 +193,116 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
     useEffect(() => {
         if (!settings.autoplay || isPaused) return;
 
-        const interval = setInterval(() => {
+        const intervalMs = getAdjustedSpeed();
+        const id = setInterval(() => {
             handleNext();
-        }, settings.speed || 3000);
+        }, intervalMs);
 
-        return () => clearInterval(interval);
-    }, [settings.autoplay, settings.speed, isPaused, handleNext]);
+        return () => clearInterval(id);
+    }, [settings.autoplay, isPaused, getAdjustedSpeed, handleNext]);
+
+    const dragStartX = useRef<number | null>(null);
+    const dragCurrentX = useRef<number | null>(null);
+    const isDragging = useRef(false);
+
+    const handleDragStart = useCallback((clientX: number) => {
+        isDragging.current = true;
+        dragStartX.current = clientX;
+        dragCurrentX.current = clientX;
+        setIsPaused(true);
+    }, []);
+
+    const handleDragMove = useCallback((clientX: number) => {
+        if (!isDragging.current) return;
+        dragCurrentX.current = clientX;
+    }, []);
+
+    const handleDragEnd = useCallback(() => {
+        if (!isDragging.current) return;
+
+        const start = dragStartX.current ?? 0;
+        const end = dragCurrentX.current ?? start;
+        const diff = start - end;
+        const threshold = 50;
+
+        if (Math.abs(diff) > threshold) {
+            if (diff > 0) {
+                handleNext();
+            } else {
+                handlePrev();
+            }
+        }
+
+        isDragging.current = false;
+        dragStartX.current = null;
+        dragCurrentX.current = null;
+        setIsPaused(false);
+    }, [handleNext, handlePrev]);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const onMouseDown = (e: MouseEvent) => {
+            if (e.button !== 0) return;
+            e.preventDefault();
+            handleDragStart(e.clientX);
+        };
+
+        const onMouseMove = (e: MouseEvent) => {
+            if (!isDragging.current) return;
+            e.preventDefault();
+            handleDragMove(e.clientX);
+        };
+
+        const onMouseUp = (e: MouseEvent) => {
+            e.preventDefault();
+            handleDragEnd();
+        };
+
+        const onTouchStart = (e: TouchEvent) => {
+            handleDragStart(e.touches[0].clientX);
+        };
+
+        const onTouchMove = (e: TouchEvent) => {
+            if (!isDragging.current) return;
+            handleDragMove(e.touches[0].clientX);
+        };
+
+        const onTouchEnd = () => {
+            handleDragEnd();
+        };
+
+        container.addEventListener('mousedown', onMouseDown);
+        container.addEventListener('touchstart', onTouchStart, { passive: true });
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+        document.addEventListener('touchmove', onTouchMove, { passive: true });
+        document.addEventListener('touchend', onTouchEnd);
+
+        return () => {
+            container.removeEventListener('mousedown', onMouseDown);
+            container.removeEventListener('touchstart', onTouchStart);
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+        };
+    }, [handleDragStart, handleDragMove, handleDragEnd]);
 
     return (
         <div
-            className="relative overflow-hidden cursor-grab active:cursor-grabbing"
+            ref={containerRef}
+            className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none"
             style={{ height: sliderHeight }}
             onMouseEnter={() => settings.pauseOnHover && setIsPaused(true)}
-            onMouseLeave={() => settings.pauseOnHover && setIsPaused(false)}
+            onMouseLeave={() => {
+                if (settings.pauseOnHover) setIsPaused(false);
+                handleDragEnd();
+            }}
         >
             <div
-                ref={sliderRef}
+                ref={(el) => { sliderRef.current = el; }}
                 className="h-full flex"
                 style={{
                     transform: `translateX(calc(-${(offset * 100) / slidesToShowCount}%))`,
@@ -169,10 +312,12 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
             >
                 {allSlides.map((child, index) => (
                     <div
-                        ref={el => { slideRefs.current[index] = el; }}
+                        ref={(el) => { slideRefs.current[index] = el; }}
                         key={`slide-${index}`}
-                        className="flex-shrink-0 h-full"
-                        style={{ width: `${100 / slidesToShowCount}%` }}
+                        className="flex-shrink-0 h-full select-none"
+                        style={{
+                            width: `${100 / slidesToShowCount}%`,
+                        }}
                     >
                         {child}
                     </div>

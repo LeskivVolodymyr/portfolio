@@ -11,7 +11,7 @@ export default function SkillSection() {
     const settings: SliderSettings = {
         infinite: true,
         autoplay: true,
-        speed: 2000,
+        speed: 1500,
         slidesToShow: 4,
         slidesToScroll: 3,
         pauseOnHover: true,
