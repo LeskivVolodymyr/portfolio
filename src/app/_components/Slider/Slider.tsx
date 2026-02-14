@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, ReactNode, useCallback } from 'react';
+import { getFromEnd, getFromStart } from '@/app/_components/Slider/slider-helpers';
 
 export interface ResponsiveSettings {
     breakpoint: number;
@@ -26,12 +27,12 @@ interface CustomSliderProps {
 }
 
 export default function CustomSlider({ settings, children }: CustomSliderProps) {
-    const [slidesToShow, setSlidesToShow] = useState(settings.slidesToShow || 1);
-    const [slidesToScroll, setSlidesToScroll] = useState(settings.slidesToScroll || 1);
+    const [slidesToShowCount, setSlidesToShowCount] = useState(settings.slidesToShow || 1);
+    const [slidesToScrollCount, setSlidesToScrollCount] = useState(settings.slidesToScroll || 1);
     const [isPaused, setIsPaused] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [offset, setOffset] = useState(0);
-    const [sliderHeight, setSliderHeight] = useState<number | undefined>(undefined);
+    const [sliderHeight, setSliderHeight] = useState<number | undefined>(undefined); // ?????
 
     const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
     const sliderRef = useRef<HTMLDivElement>(null);
@@ -39,51 +40,44 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
     // Build array with all unique children plus buffer for infinite scroll
     const buildAllSlides = useCallback(() => {
         const allSlides: ReactNode[] = [];
+        const preloadCount = 1;
+        const bufferSize = Math.max(slidesToScrollCount,  slidesToShowCount) + preloadCount;
 
-        // Add last slidesToShow items at the beginning (for reset)
-        for (let i = children.length - slidesToShow; i < children.length; i++) {
-            allSlides.push(children[i % children.length]);
-        }
+
+        allSlides.push(...getFromEnd(bufferSize, children));
 
         // Add all original children
         allSlides.push(...children);
 
-        // Add buffer slides at the end - ensure at least slidesToShow + slidesToScroll
-        const bufferSize = Math.max(slidesToShow, slidesToScroll + slidesToShow);
-        for (let i = 0; i < bufferSize; i++) {
-            allSlides.push(children[i % children.length]);
-        }
+        allSlides.push(...getFromStart(bufferSize, children))
+
+        console.log(allSlides);
 
         return allSlides;
-    }, [children, slidesToShow, slidesToScroll]);
-
+    }, [children, slidesToShowCount, slidesToScrollCount]);
 
     const [allSlides, setAllSlides] = useState<ReactNode[]>(() => buildAllSlides());
-    const currentIndexRef = useRef(slidesToShow); // Start after front buffer
 
-    const [isDragging, setIsDragging] = useState(false);
-    const [dragStart, setDragStart] = useState(0);
-    const [dragOffset, setDragOffset] = useState(0);
-    const dragThreshold = 50; // Minimum pixels to trigger slide change
+    const currentIndexRef = useRef(slidesToShowCount); // Start after front buffer
 
     useEffect(() => {
         setAllSlides(buildAllSlides());
-        currentIndexRef.current = slidesToShow; // Reset to first real slide
-        setOffset(slidesToShow);
+        currentIndexRef.current = slidesToShowCount; // Reset to first real slide
+        setOffset(slidesToShowCount);
     }, [buildAllSlides]);
 
     const getAdjustedSpeed = () => {
         const baseSpeed = settings.speed || 3000;
-        return baseSpeed / slidesToShow;
+        return baseSpeed / slidesToShowCount;
     };
 
     const handleNext = useCallback(() => {
         if (isTransitioning) return;
 
         setIsTransitioning(true);
-        currentIndexRef.current += slidesToScroll;
+        currentIndexRef.current += slidesToScrollCount;
         setOffset(currentIndexRef.current);
-    }, [isTransitioning, slidesToScroll]);
+    }, [isTransitioning, slidesToScrollCount]);
 
     const handleTransitionEnd = () => {
         if (!isTransitioning) return;
@@ -91,12 +85,12 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         setIsTransitioning(false);
 
         // Reset when we've used up the buffer (ensure we always have next slides ready)
-        if (currentIndexRef.current >= slidesToShow + children.length) {
+        if (currentIndexRef.current >= slidesToShowCount + children.length) {
             requestAnimationFrame(() => {
                 // Reset to the equivalent position in the original slides
-                const positionInCycle = (currentIndexRef.current - slidesToShow) % children.length;
-                currentIndexRef.current = slidesToShow + positionInCycle;
-                setOffset(slidesToShow + positionInCycle);
+                const positionInCycle = (currentIndexRef.current - slidesToShowCount) % children.length;
+                currentIndexRef.current = slidesToShowCount + positionInCycle;
+                setOffset(slidesToShowCount + positionInCycle);
             });
         }
     };
@@ -130,11 +124,11 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
                 .find((item) => width <= item.breakpoint);
 
             if (responsiveSettings) {
-                setSlidesToShow(responsiveSettings.settings.slidesToShow);
-                setSlidesToScroll(responsiveSettings.settings.slidesToScroll);
+                setSlidesToShowCount(responsiveSettings.settings.slidesToShow);
+                setSlidesToScrollCount(responsiveSettings.settings.slidesToScroll);
             } else {
-                setSlidesToShow(settings.slidesToShow || 1);
-                setSlidesToScroll(settings.slidesToScroll || 1);
+                setSlidesToShowCount(settings.slidesToShow || 1);
+                setSlidesToScrollCount(settings.slidesToScroll || 1);
             }
         };
 
@@ -157,62 +151,19 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         return () => clearInterval(interval);
     }, [settings.autoplay, settings.speed, isPaused, handleNext]);
 
-    const handleMouseDown = (e: React.MouseEvent) => {
-        setIsDragging(true);
-        setDragStart(e.clientX);
-        setDragOffset(0);
-        if (settings.pauseOnHover) setIsPaused(true);
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging) return;
-
-        const currentDragOffset = e.clientX - dragStart;
-        setDragOffset(currentDragOffset);
-    };
-
-    const handleMouseUp = () => {
-        if (!isDragging) return;
-
-        setIsDragging(false);
-
-        // Determine if we should slide based on drag distance
-        if (Math.abs(dragOffset) > dragThreshold) {
-            if (dragOffset < 0) {
-                // Dragged left = next
-                handleNext();
-            }
-            // You can add handlePrevious here if needed
-        }
-
-        setDragOffset(0);
-        if (settings.pauseOnHover) setIsPaused(false);
-    };
-
-    const handleMouseLeave = () => {
-        if (isDragging) {
-            handleMouseUp();
-        }
-        if (settings.pauseOnHover) setIsPaused(false);
-    };
-
-
     return (
         <div
             className="relative overflow-hidden cursor-grab active:cursor-grabbing"
             style={{ height: sliderHeight }}
             onMouseEnter={() => settings.pauseOnHover && setIsPaused(true)}
-            onMouseLeave={handleMouseLeave}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
+            onMouseLeave={() => settings.pauseOnHover && setIsPaused(false)}
         >
             <div
                 ref={sliderRef}
                 className="h-full flex"
                 style={{
-                    transform: `translateX(calc(-${(offset * 100) / slidesToShow}% + ${dragOffset}px))`,
-                    transition: isTransitioning && !isDragging ? `transform ${getAdjustedSpeed()}ms ease-in-out` : 'none',
+                    transform: `translateX(calc(-${(offset * 100) / slidesToShowCount}%))`,
+                    transition: isTransitioning ? `transform ${getAdjustedSpeed()}ms ease-in-out` : 'none',
                 }}
                 onTransitionEnd={handleTransitionEnd}
             >
@@ -221,7 +172,7 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
                         ref={el => { slideRefs.current[index] = el; }}
                         key={`slide-${index}`}
                         className="flex-shrink-0 h-full"
-                        style={{ width: `${100 / slidesToShow}%` }}
+                        style={{ width: `${100 / slidesToShowCount}%` }}
                     >
                         {child}
                     </div>
