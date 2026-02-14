@@ -1,27 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef, ReactNode, useCallback } from 'react';
+import { useState, useEffect, useRef, ReactNode, useCallback, useMemo } from 'react';
 import { getFromEnd, getFromStart } from '@/app/_components/Slider/slider-helpers';
-
-export interface ResponsiveSettings {
-    breakpoint: number;
-    settings: {
-        slidesToShow: number;
-        slidesToScroll: number;
-        speed?: number;
-    };
-}
-
-export interface SliderSettings {
-    infinite?: boolean;
-    autoplay?: boolean;
-    speed?: number;
-    autoplaySpeed?: number;
-    slidesToShow?: number;
-    slidesToScroll?: number;
-    pauseOnHover?: boolean;
-    responsive?: ResponsiveSettings[];
-}
+import { SliderSettings } from '@/app/_components/Slider/SliderSettings';
 
 interface CustomSliderProps {
     settings: SliderSettings;
@@ -39,112 +20,73 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
 
     const [offset, setOffset] = useState<number>(bufferSize);
 
-    const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
     const sliderRef = useRef<HTMLDivElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const transitionGuardRef = useRef(false);
+    const currentIndexRef = useRef<number>(bufferSize);
 
-    const buildAllSlides = useCallback(() => {
-        const allSlides: ReactNode[] = [];
+    const dragState = useRef({
+        isDragging: false,
+        startX: null as number | null,
+        currentX: null as number | null,
+    });
+
+    const allSlides = useMemo(() => {
+        const slides: ReactNode[] = [];
         const preloadCount = 1;
         const calcBuffer = Math.max(slidesToScrollCount, slidesToShowCount) + preloadCount;
 
-        allSlides.push(...getFromEnd(calcBuffer, children));
-        allSlides.push(...children);
-        allSlides.push(...getFromStart(calcBuffer, children));
+        slides.push(...getFromEnd(calcBuffer, children));
+        slides.push(...children);
+        slides.push(...getFromStart(calcBuffer, children));
 
-        return allSlides;
+        return slides;
     }, [children, slidesToShowCount, slidesToScrollCount]);
 
-    const [allSlides, setAllSlides] = useState<ReactNode[]>(() => buildAllSlides());
-
-    const currentIndexRef = useRef<number>(bufferSize);
-
     useEffect(() => {
-        setAllSlides(buildAllSlides());
         currentIndexRef.current = bufferSize;
         setOffset(bufferSize);
-        slideRefs.current = [];
-    }, [buildAllSlides, slidesToShowCount, bufferSize]);
-
-    const getAdjustedSpeed = useCallback(() => {
-        return currentSpeed;
-    }, [currentSpeed]);
+    }, [allSlides, bufferSize]);
 
     const handleNext = useCallback(() => {
-        if (isTransitioning) return;
-        if (children.length === 0) return;
+        if (isTransitioning || children.length === 0) return;
         setIsTransitioning(true);
-        transitionGuardRef.current = true;
         currentIndexRef.current += slidesToScrollCount;
         setOffset(currentIndexRef.current);
     }, [isTransitioning, slidesToScrollCount, children.length]);
 
     const handlePrev = useCallback(() => {
-        if (isTransitioning) return;
-        if (children.length === 0) return;
+        if (isTransitioning || children.length === 0) return;
         setIsTransitioning(true);
-        transitionGuardRef.current = true;
         currentIndexRef.current -= slidesToScrollCount;
         setOffset(currentIndexRef.current);
     }, [isTransitioning, slidesToScrollCount, children.length]);
 
-    const transitionTimeoutRef = useRef<number | null>(null);
-
-    useEffect(() => {
-        if (!isTransitioning) return;
-        if (transitionTimeoutRef.current) {
-            clearTimeout(transitionTimeoutRef.current);
-            transitionTimeoutRef.current = null;
-        }
-        const t = window.setTimeout(() => {
-            if (transitionGuardRef.current) {
-                transitionGuardRef.current = false;
-                setIsTransitioning(false);
-            }
-        }, getAdjustedSpeed() + 120);
-
-        transitionTimeoutRef.current = t;
-
-        return () => {
-            if (transitionTimeoutRef.current) {
-                clearTimeout(transitionTimeoutRef.current);
-                transitionTimeoutRef.current = null;
-            }
-        };
-    }, [isTransitioning, getAdjustedSpeed]);
+    const wrapIndex = useCallback((index: number) => {
+        const cycle = children.length;
+        const normalized = ((index - bufferSize) % cycle + cycle) % cycle;
+        return bufferSize + normalized;
+    }, [children.length, bufferSize]);
 
     const handleTransitionEnd = useCallback((e?: React.TransitionEvent<HTMLDivElement>) => {
         if (e && e.propertyName !== 'transform') return;
 
         if (children.length === 0) {
-            transitionGuardRef.current = false;
             setIsTransitioning(false);
             return;
         }
 
         const bufferSizeLocal = Math.max(slidesToScrollCount, slidesToShowCount) + 1;
 
-        if (currentIndexRef.current >= bufferSizeLocal + children.length) {
+        if (currentIndexRef.current >= bufferSizeLocal + children.length ||
+            currentIndexRef.current < bufferSizeLocal) {
             requestAnimationFrame(() => {
-                const positionInCycle = (currentIndexRef.current - bufferSizeLocal) % children.length;
-                currentIndexRef.current = bufferSizeLocal + positionInCycle;
+                currentIndexRef.current = wrapIndex(currentIndexRef.current);
                 setOffset(currentIndexRef.current);
             });
         }
 
-        if (currentIndexRef.current < bufferSizeLocal) {
-            requestAnimationFrame(() => {
-                const raw = currentIndexRef.current - bufferSizeLocal;
-                const positionInCycle = ((raw % children.length) + children.length) % children.length;
-                currentIndexRef.current = bufferSizeLocal + positionInCycle;
-                setOffset(currentIndexRef.current);
-            });
-        }
-
-        transitionGuardRef.current = false;
         setIsTransitioning(false);
-    }, [children.length, slidesToScrollCount, slidesToShowCount]);
+    }, [children.length, slidesToScrollCount, slidesToShowCount, wrapIndex]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -159,26 +101,8 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
                 setSlidesToShowCount(responsiveSettings.settings.slidesToShow);
                 setSlidesToScrollCount(responsiveSettings.settings.slidesToScroll);
 
-                // Find speed: use current breakpoint, or fallback to previous breakpoint, or root
-                let speed = responsiveSettings.settings.speed;
-
-                if (speed === undefined && sortedResponsive) {
-                    // Find all breakpoints smaller than current
-                    const smallerBreakpoints = sortedResponsive.filter(
-                        (item) => item.breakpoint < responsiveSettings.breakpoint
-                    );
-
-                    // Search backwards for a speed setting
-                    for (let i = smallerBreakpoints.length - 1; i >= 0; i--) {
-                        if (smallerBreakpoints[i].settings.speed !== undefined) {
-                            speed = smallerBreakpoints[i].settings.speed;
-                            break;
-                        }
-                    }
-                }
-
-                // Final fallback to root setting
-                setCurrentSpeed(speed ?? settings.speed ?? 3000);
+                const speed = responsiveSettings.settings.speed ?? settings.speed ?? 3000;
+                setCurrentSpeed(speed);
             } else {
                 setSlidesToShowCount(settings.slidesToShow || 1);
                 setSlidesToScrollCount(settings.slidesToScroll || 1);
@@ -192,10 +116,6 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
     }, [settings]);
 
     useEffect(() => {
-        setAllSlides(buildAllSlides());
-    }, [buildAllSlides]);
-
-    useEffect(() => {
         if (!settings.autoplay || isPaused) return;
 
         const intervalMs = settings.autoplaySpeed ?? 3000;
@@ -206,27 +126,23 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         return () => clearInterval(id);
     }, [settings.autoplay, settings.autoplaySpeed, isPaused, handleNext]);
 
-    const dragStartX = useRef<number | null>(null);
-    const dragCurrentX = useRef<number | null>(null);
-    const isDragging = useRef(false);
-
     const handleDragStart = useCallback((clientX: number) => {
-        isDragging.current = true;
-        dragStartX.current = clientX;
-        dragCurrentX.current = clientX;
+        dragState.current.isDragging = true;
+        dragState.current.startX = clientX;
+        dragState.current.currentX = clientX;
         setIsPaused(true);
     }, []);
 
     const handleDragMove = useCallback((clientX: number) => {
-        if (!isDragging.current) return;
-        dragCurrentX.current = clientX;
+        if (!dragState.current.isDragging) return;
+        dragState.current.currentX = clientX;
     }, []);
 
     const handleDragEnd = useCallback(() => {
-        if (!isDragging.current) return;
+        if (!dragState.current.isDragging) return;
 
-        const start = dragStartX.current ?? 0;
-        const end = dragCurrentX.current ?? start;
+        const start = dragState.current.startX ?? 0;
+        const end = dragState.current.currentX ?? start;
         const diff = start - end;
         const threshold = 50;
 
@@ -238,9 +154,9 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
             }
         }
 
-        isDragging.current = false;
-        dragStartX.current = null;
-        dragCurrentX.current = null;
+        dragState.current.isDragging = false;
+        dragState.current.startX = null;
+        dragState.current.currentX = null;
         setIsPaused(false);
     }, [handleNext, handlePrev]);
 
@@ -255,7 +171,7 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         };
 
         const onMouseMove = (e: MouseEvent) => {
-            if (!isDragging.current) return;
+            if (!dragState.current.isDragging) return;
             e.preventDefault();
             handleDragMove(e.clientX);
         };
@@ -270,7 +186,7 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         };
 
         const onTouchMove = (e: TouchEvent) => {
-            if (!isDragging.current) return;
+            if (!dragState.current.isDragging) return;
             handleDragMove(e.touches[0].clientX);
         };
 
@@ -310,13 +226,12 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
                 className="flex items-stretch"
                 style={{
                     transform: `translateX(calc(-${(offset * 100) / slidesToShowCount}%))`,
-                    transition: isTransitioning ? `transform ${getAdjustedSpeed()}ms ease-in-out` : 'none',
+                    transition: isTransitioning ? `transform ${currentSpeed}ms ease-in-out` : 'none',
                 }}
                 onTransitionEnd={handleTransitionEnd}
             >
                 {allSlides.map((child, index) => (
                     <div
-                        ref={(el) => { slideRefs.current[index] = el; }}
                         key={`slide-${index}`}
                         className="flex-shrink-0 select-none flex"
                         style={{
