@@ -151,6 +151,8 @@ export function Slider({ settings, children }: CustomSliderProps) {
         return () => window.removeEventListener('resize', debouncedResize);
     }, [debouncedResize]);
 
+
+    // TODO: fix initial state
     useEffect(() => {
         const responsive = getResponsiveSettings(window.innerWidth);
 
