@@ -38,7 +38,6 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
     const bufferSize = Math.max(slidesToScrollCount, slidesToShowCount) + 1;
 
     const [offset, setOffset] = useState<number>(bufferSize);
-    const [sliderHeight, setSliderHeight] = useState<number | undefined>(undefined);
 
     const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
     const sliderRef = useRef<HTMLDivElement | null>(null);
@@ -146,26 +145,6 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         transitionGuardRef.current = false;
         setIsTransitioning(false);
     }, [children.length, slidesToScrollCount, slidesToShowCount]);
-
-    useEffect(() => {
-        const measureHeight = () => {
-            const heights = slideRefs.current
-                .filter(Boolean)
-                .map((el) => el!.getBoundingClientRect().height);
-
-            if (heights.length > 0) {
-                setSliderHeight(Math.max(...heights));
-            }
-        };
-
-        const timer = setTimeout(measureHeight, 0);
-        window.addEventListener('resize', measureHeight);
-
-        return () => {
-            clearTimeout(timer);
-            window.removeEventListener('resize', measureHeight);
-        };
-    }, [allSlides]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -320,7 +299,6 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         <div
             ref={containerRef}
             className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none"
-            style={{ height: sliderHeight }}
             onMouseEnter={() => settings.pauseOnHover && setIsPaused(true)}
             onMouseLeave={() => {
                 if (settings.pauseOnHover) setIsPaused(false);
@@ -329,7 +307,7 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
         >
             <div
                 ref={(el) => { sliderRef.current = el; }}
-                className="h-full flex"
+                className="flex items-stretch"
                 style={{
                     transform: `translateX(calc(-${(offset * 100) / slidesToShowCount}%))`,
                     transition: isTransitioning ? `transform ${getAdjustedSpeed()}ms ease-in-out` : 'none',
@@ -340,7 +318,7 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
                     <div
                         ref={(el) => { slideRefs.current[index] = el; }}
                         key={`slide-${index}`}
-                        className="flex-shrink-0 h-full select-none"
+                        className="flex-shrink-0 select-none flex"
                         style={{
                             width: `${100 / slidesToShowCount}%`,
                         }}
