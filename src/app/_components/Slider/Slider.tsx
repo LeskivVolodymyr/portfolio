@@ -9,7 +9,7 @@ interface CustomSliderProps {
     children: ReactNode[];
 }
 
-export default function CustomSlider({ settings, children }: CustomSliderProps) {
+export function Slider({ settings, children }: CustomSliderProps) {
     const [slidesToShowCount, setSlidesToShowCount] = useState(settings.slidesToShow || 1);
     const [slidesToScrollCount, setSlidesToScrollCount] = useState(settings.slidesToScroll || 1);
     const [currentSpeed, setCurrentSpeed] = useState(settings.speed ?? 3000);

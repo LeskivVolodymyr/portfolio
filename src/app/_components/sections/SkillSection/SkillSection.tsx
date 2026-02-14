@@ -3,7 +3,7 @@
 import { CarouselCard } from '@/app/_components/CarouselCard/CarouselCard';
 import { useTheme } from '@/app/context/ThemeContext';
 import technologies, { Technology } from './technologies';
-import Slider, { SliderSettings } from '@/app/_components/Slider/Slider';
+import { Slider, SliderSettings } from '@/app/_components/Slider';
 
 export default function SkillSection() {
     const { theme } = useTheme();
