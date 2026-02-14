@@ -9,20 +9,23 @@ interface CustomSliderProps {
     children: ReactNode[];
 }
 
+const DEFAULT_SPEED = 2000;
+const DRAG_THRESHOLD = 50;
+
 export function Slider({ settings, children }: CustomSliderProps) {
+    const mountedRef = useRef(true);
     const [slidesToShowCount, setSlidesToShowCount] = useState(settings.slidesToShow || 1);
     const [slidesToScrollCount, setSlidesToScrollCount] = useState(settings.slidesToScroll || 1);
-    const [currentSpeed, setCurrentSpeed] = useState(settings.speed ?? 3000);
+    const [currentSpeed, setCurrentSpeed] = useState(settings.speed ?? DEFAULT_SPEED);
     const [isPaused, setIsPaused] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
 
     const bufferSize = Math.max(slidesToScrollCount, slidesToShowCount) + 1;
+    const [offset, setOffset] = useState<number>(() => bufferSize);
 
-    const [offset, setOffset] = useState<number>(bufferSize);
-
-    const sliderRef = useRef<HTMLDivElement | null>(null);
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const currentIndexRef = useRef<number>(bufferSize);
+    useEffect(() => {
+        return () => { mountedRef.current = false; };
+    }, []);
 
     const dragState = useRef({
         isDragging: false,
@@ -30,20 +33,27 @@ export function Slider({ settings, children }: CustomSliderProps) {
         currentX: null as number | null,
     });
 
-    const allSlides = useMemo(() => {
-        const slides: ReactNode[] = [];
-        const preloadCount = 1;
-        const calcBuffer = Math.max(slidesToScrollCount, slidesToShowCount) + preloadCount;
+    const setPauseState = useCallback((paused: boolean) => {
+        if (settings.pauseOnHover)
+            setIsPaused(paused);
+    }, [settings.pauseOnHover]);
 
-        slides.push(...getFromEnd(calcBuffer, children));
+    const sliderRef = useRef<HTMLDivElement | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const currentIndexRef = useRef<number>(bufferSize);
+
+    const allSlides = useMemo(() => {
+        const slides: ReactNode[] = getFromEnd(bufferSize, children); // prev buffer
         slides.push(...children);
-        slides.push(...getFromStart(calcBuffer, children));
+        slides.push(...getFromStart(bufferSize, children)); // next buffer
 
         return slides;
-    }, [children, slidesToShowCount, slidesToScrollCount]);
+    }, [children, bufferSize]);
 
     useEffect(() => {
+        // reset to initial position when children or buffer size changes
         currentIndexRef.current = bufferSize;
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setOffset(bufferSize);
     }, [allSlides, bufferSize]);
 
@@ -61,6 +71,24 @@ export function Slider({ settings, children }: CustomSliderProps) {
         setOffset(currentIndexRef.current);
     }, [isTransitioning, slidesToScrollCount, children.length]);
 
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                handlePrev();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                handleNext();
+            }
+        };
+
+        container.addEventListener('keydown', handleKeyDown);
+        return () => container.removeEventListener('keydown', handleKeyDown);
+    }, [handleNext, handlePrev]);
+
     const wrapIndex = useCallback((index: number) => {
         const cycle = children.length;
         const normalized = ((index - bufferSize) % cycle + cycle) % cycle;
@@ -75,10 +103,8 @@ export function Slider({ settings, children }: CustomSliderProps) {
             return;
         }
 
-        const bufferSizeLocal = Math.max(slidesToScrollCount, slidesToShowCount) + 1;
-
-        if (currentIndexRef.current >= bufferSizeLocal + children.length ||
-            currentIndexRef.current < bufferSizeLocal) {
+        if (currentIndexRef.current >= bufferSize + children.length ||
+            currentIndexRef.current < bufferSize) {
             requestAnimationFrame(() => {
                 currentIndexRef.current = wrapIndex(currentIndexRef.current);
                 setOffset(currentIndexRef.current);
@@ -86,40 +112,65 @@ export function Slider({ settings, children }: CustomSliderProps) {
         }
 
         setIsTransitioning(false);
-    }, [children.length, slidesToScrollCount, slidesToShowCount, wrapIndex]);
+    },[children.length, bufferSize, wrapIndex]);
+
+    const getResponsiveSettings = useCallback((width: number) => {
+        const sorted = settings.responsive
+            ?.slice()
+            .sort((a, b) => a.breakpoint - b.breakpoint);
+
+        return sorted?.find((item) => width <= item.breakpoint);
+    }, [settings.responsive]);
+
+    const handleResize = useCallback(() => {
+        const responsive = getResponsiveSettings(window.innerWidth);
+
+        if (responsive) {
+            setSlidesToShowCount(responsive.settings.slidesToShow);
+            setSlidesToScrollCount(responsive.settings.slidesToScroll);
+            setCurrentSpeed(responsive.settings.speed ?? settings.speed ?? DEFAULT_SPEED);
+        } else {
+            setSlidesToShowCount(settings.slidesToShow || 1);
+            setSlidesToScrollCount(settings.slidesToScroll || 1);
+            setCurrentSpeed(settings.speed ?? DEFAULT_SPEED);
+        }
+    }, [getResponsiveSettings, settings.slidesToShow, settings.slidesToScroll, settings.speed]);
+
+    const debounce = useCallback((fn: Function, delay: number) => {
+        let timeoutId: NodeJS.Timeout;
+        return (...args: any[]) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn(...args), delay);
+        };
+    }, []);
+
+    const debouncedResize = useMemo(() => debounce(handleResize, 50), [debounce, handleResize]);
 
     useEffect(() => {
-        const handleResize = () => {
-            const width = window.innerWidth;
-            const sortedResponsive = settings.responsive
-                ?.slice()
-                .sort((a, b) => a.breakpoint - b.breakpoint);
+        window.addEventListener('resize', debouncedResize);
+        return () => window.removeEventListener('resize', debouncedResize);
+    }, [debouncedResize]);
 
-            const responsiveSettings = sortedResponsive?.find((item) => width <= item.breakpoint);
+    useEffect(() => {
+        const responsive = getResponsiveSettings(window.innerWidth);
 
-            if (responsiveSettings) {
-                setSlidesToShowCount(responsiveSettings.settings.slidesToShow);
-                setSlidesToScrollCount(responsiveSettings.settings.slidesToScroll);
-
-                const speed = responsiveSettings.settings.speed ?? settings.speed ?? 3000;
-                setCurrentSpeed(speed);
-            } else {
-                setSlidesToShowCount(settings.slidesToShow || 1);
-                setSlidesToScrollCount(settings.slidesToScroll || 1);
-                setCurrentSpeed(settings.speed ?? 3000);
-            }
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [settings]);
+        if (responsive) {
+            setSlidesToShowCount(responsive.settings.slidesToShow);
+            setSlidesToScrollCount(responsive.settings.slidesToScroll);
+            setCurrentSpeed(responsive.settings.speed ?? settings.speed ?? DEFAULT_SPEED);
+        } else {
+            setSlidesToShowCount(settings.slidesToShow || 1);
+            setSlidesToScrollCount(settings.slidesToScroll || 1);
+            setCurrentSpeed(settings.speed ?? DEFAULT_SPEED);
+        }
+    }, []);
 
     useEffect(() => {
         if (!settings.autoplay || isPaused) return;
 
-        const intervalMs = settings.autoplaySpeed ?? 3000;
+        const intervalMs = settings.autoplaySpeed ?? DEFAULT_SPEED;
         const id = setInterval(() => {
+            if (!mountedRef.current) return;
             handleNext();
         }, intervalMs);
 
@@ -144,9 +195,8 @@ export function Slider({ settings, children }: CustomSliderProps) {
         const start = dragState.current.startX ?? 0;
         const end = dragState.current.currentX ?? start;
         const diff = start - end;
-        const threshold = 50;
 
-        if (Math.abs(diff) > threshold) {
+        if (Math.abs(diff) > DRAG_THRESHOLD) {
             if (diff > 0) {
                 handleNext();
             } else {
@@ -164,61 +214,46 @@ export function Slider({ settings, children }: CustomSliderProps) {
         const container = containerRef.current;
         if (!container) return;
 
-        const onMouseDown = (e: MouseEvent) => {
-            if (e.button !== 0) return;
-            e.preventDefault();
+        const controller = new AbortController();
+        const { signal } = controller;
+        let activePointerId: number | null = null;
+
+        const onPointerDown = (e: PointerEvent) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            activePointerId = e.pointerId;
+            (e.target as Element).setPointerCapture?.(e.pointerId);
             handleDragStart(e.clientX);
         };
 
-        const onMouseMove = (e: MouseEvent) => {
-            if (!dragState.current.isDragging) return;
-            e.preventDefault();
+        const onPointerMove = (e: PointerEvent) => {
+            if (activePointerId !== e.pointerId) return;
+            if (dragState.current.isDragging) e.preventDefault();
             handleDragMove(e.clientX);
         };
 
-        const onMouseUp = (e: MouseEvent) => {
-            e.preventDefault();
+        const onPointerUp = (e: PointerEvent) => {
+            if (activePointerId !== e.pointerId) return;
+            (e.target as Element).releasePointerCapture?.(e.pointerId);
+            activePointerId = null;
             handleDragEnd();
         };
 
-        const onTouchStart = (e: TouchEvent) => {
-            handleDragStart(e.touches[0].clientX);
-        };
+        container.addEventListener('pointerdown', onPointerDown, { signal });
+        document.addEventListener('pointermove', onPointerMove, { passive: false, signal });
+        document.addEventListener('pointerup', onPointerUp, { signal });
 
-        const onTouchMove = (e: TouchEvent) => {
-            if (!dragState.current.isDragging) return;
-            handleDragMove(e.touches[0].clientX);
-        };
-
-        const onTouchEnd = () => {
-            handleDragEnd();
-        };
-
-        container.addEventListener('mousedown', onMouseDown);
-        container.addEventListener('touchstart', onTouchStart, { passive: true });
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-        document.addEventListener('touchmove', onTouchMove, { passive: true });
-        document.addEventListener('touchend', onTouchEnd);
-
-        return () => {
-            container.removeEventListener('mousedown', onMouseDown);
-            container.removeEventListener('touchstart', onTouchStart);
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-            document.removeEventListener('touchmove', onTouchMove);
-            document.removeEventListener('touchend', onTouchEnd);
-        };
+        return () => controller.abort();
     }, [handleDragStart, handleDragMove, handleDragEnd]);
 
     return (
         <div
             ref={containerRef}
             className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none"
-            onMouseEnter={() => settings.pauseOnHover && setIsPaused(true)}
+            tabIndex={0}
+            onMouseEnter={() => setPauseState(true)}
             onMouseLeave={() => {
-                if (settings.pauseOnHover) setIsPaused(false);
-                handleDragEnd();
+                setPauseState(false);
+                handleDragEnd(); // drag cleanup
             }}
         >
             <div
@@ -227,6 +262,7 @@ export function Slider({ settings, children }: CustomSliderProps) {
                 style={{
                     transform: `translateX(calc(-${(offset * 100) / slidesToShowCount}%))`,
                     transition: isTransitioning ? `transform ${currentSpeed}ms ease-in-out` : 'none',
+                    willChange: 'transform'
                 }}
                 onTransitionEnd={handleTransitionEnd}
             >
