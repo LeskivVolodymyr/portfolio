@@ -8,6 +8,7 @@ export interface ResponsiveSettings {
     settings: {
         slidesToShow: number;
         slidesToScroll: number;
+        speed?: number;
     };
 }
 
@@ -15,6 +16,7 @@ export interface SliderSettings {
     infinite?: boolean;
     autoplay?: boolean;
     speed?: number;
+    autoplaySpeed?: number;
     slidesToShow?: number;
     slidesToScroll?: number;
     pauseOnHover?: boolean;
@@ -29,6 +31,7 @@ interface CustomSliderProps {
 export default function CustomSlider({ settings, children }: CustomSliderProps) {
     const [slidesToShowCount, setSlidesToShowCount] = useState(settings.slidesToShow || 1);
     const [slidesToScrollCount, setSlidesToScrollCount] = useState(settings.slidesToScroll || 1);
+    const [currentSpeed, setCurrentSpeed] = useState(settings.speed ?? 3000);
     const [isPaused, setIsPaused] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -66,8 +69,8 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
     }, [buildAllSlides, slidesToShowCount, bufferSize]);
 
     const getAdjustedSpeed = useCallback(() => {
-        return settings.speed ?? 3000;
-    }, [settings.speed]);
+        return currentSpeed;
+    }, [currentSpeed]);
 
     const handleNext = useCallback(() => {
         if (isTransitioning) return;
@@ -167,17 +170,40 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
     useEffect(() => {
         const handleResize = () => {
             const width = window.innerWidth;
-            const responsiveSettings = settings.responsive
+            const sortedResponsive = settings.responsive
                 ?.slice()
-                .sort((a, b) => a.breakpoint - b.breakpoint)
-                .find((item) => width <= item.breakpoint);
+                .sort((a, b) => a.breakpoint - b.breakpoint);
+
+            const responsiveSettings = sortedResponsive?.find((item) => width <= item.breakpoint);
 
             if (responsiveSettings) {
                 setSlidesToShowCount(responsiveSettings.settings.slidesToShow);
                 setSlidesToScrollCount(responsiveSettings.settings.slidesToScroll);
+
+                // Find speed: use current breakpoint, or fallback to previous breakpoint, or root
+                let speed = responsiveSettings.settings.speed;
+
+                if (speed === undefined && sortedResponsive) {
+                    // Find all breakpoints smaller than current
+                    const smallerBreakpoints = sortedResponsive.filter(
+                        (item) => item.breakpoint < responsiveSettings.breakpoint
+                    );
+
+                    // Search backwards for a speed setting
+                    for (let i = smallerBreakpoints.length - 1; i >= 0; i--) {
+                        if (smallerBreakpoints[i].settings.speed !== undefined) {
+                            speed = smallerBreakpoints[i].settings.speed;
+                            break;
+                        }
+                    }
+                }
+
+                // Final fallback to root setting
+                setCurrentSpeed(speed ?? settings.speed ?? 3000);
             } else {
                 setSlidesToShowCount(settings.slidesToShow || 1);
                 setSlidesToScrollCount(settings.slidesToScroll || 1);
+                setCurrentSpeed(settings.speed ?? 3000);
             }
         };
 
@@ -193,13 +219,13 @@ export default function CustomSlider({ settings, children }: CustomSliderProps) 
     useEffect(() => {
         if (!settings.autoplay || isPaused) return;
 
-        const intervalMs = getAdjustedSpeed();
+        const intervalMs = settings.autoplaySpeed ?? 3000;
         const id = setInterval(() => {
             handleNext();
         }, intervalMs);
 
         return () => clearInterval(id);
-    }, [settings.autoplay, isPaused, getAdjustedSpeed, handleNext]);
+    }, [settings.autoplay, settings.autoplaySpeed, isPaused, handleNext]);
 
     const dragStartX = useRef<number | null>(null);
     const dragCurrentX = useRef<number | null>(null);

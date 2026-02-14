@@ -12,6 +12,7 @@ export default function SkillSection() {
         infinite: true,
         autoplay: true,
         speed: 1500,
+        autoplaySpeed: 2000,
         slidesToShow: 4,
         slidesToScroll: 3,
         pauseOnHover: true,
@@ -21,6 +22,7 @@ export default function SkillSection() {
                 settings: {
                     slidesToShow: 3,
                     slidesToScroll: 2,
+                    speed: 1000
                 },
             },
             {
@@ -28,6 +30,7 @@ export default function SkillSection() {
                 settings: {
                     slidesToShow: 2,
                     slidesToScroll: 1,
+                    speed: 750,
                 },
             },
             {
@@ -35,6 +38,7 @@ export default function SkillSection() {
                 settings: {
                     slidesToShow: 1,
                     slidesToScroll: 1,
+                    speed: 500,
                 },
             },
         ],
