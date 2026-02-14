@@ -14,6 +14,7 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "formik": "^2.4.9",
     "hamburger-react": "^2.5.2",
+    "isomorphic-dompurify": "^3.0.0-rc.2",
     "jsdom": "^27.4.0",
     "mongodb": "^7.0.0",
     "next": "^16.1.5",
