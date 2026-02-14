@@ -1,7 +1,6 @@
 import { IContactForm } from '@/app/interfaces/IContactForm';
 import { formDataToContactForm } from '@/app/utils/mapper';
-import DOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
+import DOMPurify from 'isomorphic-dompurify';
 import validator from 'validator';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 import * as Yup from 'yup';
@@ -11,15 +10,12 @@ import LoggerFactory from '@/app/utils/logger/LoggerFactory';
 import Logger from '@/app/utils/logger/Logger';
 import sendTelegramMessage from '@/app/_lib/telegram-client';
 
-const window = new JSDOM('').window;
-const purify = DOMPurify(window);
-
 function sanitizeForm(input: IContactForm): IContactForm {
     return {
-        name: purify.sanitize(validator.escape(input.name)),
-        email: purify.sanitize(validator.normalizeEmail(input.email) || ''),
-        subject: purify.sanitize(validator.escape(input.subject)),
-        message: purify.sanitize(validator.escape(input.message)),
+        name: DOMPurify.sanitize(validator.escape(input.name)),
+        email: DOMPurify.sanitize(validator.normalizeEmail(input.email) || ''),
+        subject: DOMPurify.sanitize(validator.escape(input.subject)),
+        message: DOMPurify.sanitize(validator.escape(input.message)),
     };
 }
 
