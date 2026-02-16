@@ -1,8 +1,7 @@
 import { IContactForm } from '@/app/interfaces/IContactForm';
 import { formDataToContactForm } from '@/app/utils/mapper';
-import DOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
 import validator from 'validator';
+import sanitizeHtml, { IOptions } from 'sanitize-html';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
 import * as Yup from 'yup';
 import { IContactRequestDao } from '@/app/interfaces/dao/IContactRequestDao';
@@ -11,15 +10,18 @@ import LoggerFactory from '@/app/utils/logger/LoggerFactory';
 import Logger from '@/app/utils/logger/Logger';
 import sendTelegramMessage from '@/app/_lib/telegram-client';
 
-const window = new JSDOM('').window;
-const purify = DOMPurify(window);
-
 function sanitizeForm(input: IContactForm): IContactForm {
+    const sanitizeOptions: IOptions = {
+        allowedTags: [], // No HTML tags allowed
+        allowedAttributes: {},
+        disallowedTagsMode: 'discard'
+    };
+
     return {
-        name: purify.sanitize(validator.escape(input.name)),
-        email: purify.sanitize(validator.normalizeEmail(input.email) || ''),
-        subject: purify.sanitize(validator.escape(input.subject)),
-        message: purify.sanitize(validator.escape(input.message)),
+        name: sanitizeHtml(validator.escape(input.name.trim()), sanitizeOptions),
+        email: validator.normalizeEmail(input.email) || '',
+        subject: sanitizeHtml(validator.escape(input.subject.trim()), sanitizeOptions),
+        message: sanitizeHtml(validator.escape(input.message.trim()), sanitizeOptions),
     };
 }
 
