@@ -1,4 +1,4 @@
-import React, { RefObject, useRef } from 'react';
+import React, { RefObject, useRef, Suspense, useState } from 'react';
 import { Formik, Form, FormikHelpers } from 'formik';
 import Button from '@/app/_components/Button/Button';
 import contactFormSchema from '@/app/_components/ContactForm/contact-form-schema';
@@ -7,13 +7,14 @@ import { connect } from '@/app/_lib/api-client';
 import { contactFormToFormData } from '@/app/utils/mapper';
 import ReCAPTCHA from 'react-google-recaptcha';
 import RecaptchaMessage from '@/app/_components/RecaptchaMessage/RecaptchaMessage';
-import Recaptcha from '@/app/_components/Recaptcha/Recaptcha';
 import FormField from '@/app/_components/FormField/FormFiled';
 import Loader from '@/app/_components/Loader/Loader';
 import Toast from '@/app/_components/Toast/Toast';
 
+const Recaptcha = React.lazy(() => import('@/app/_components/Recaptcha/Recaptcha'));
 export default function ContactForm() {
     const recaptchaRef: RefObject<ReCAPTCHA | null> = useRef<ReCAPTCHA>(null);
+    const [loadRecaptcha, setLoadRecaptcha] = useState(false);
     const toastRef = useRef<{ show: (message: string, type?: string) => void }>(
         null
     );
@@ -33,6 +34,10 @@ export default function ContactForm() {
     ) => {
         try {
             helpers.setSubmitting(true);
+            if (!loadRecaptcha) {
+                setLoadRecaptcha(true);
+                await new Promise((r) => setTimeout(r, 250));
+            }
             values.captcha = await recaptchaRef.current?.executeAsync();
             const response = await connect(contactFormToFormData(values));
 
@@ -58,6 +63,10 @@ export default function ContactForm() {
         toastRef.current!.show(errorMessages, 'error');
     };
 
+    const ensureRecaptchaLoaded = () => {
+        if (!loadRecaptcha) setLoadRecaptcha(true);
+    };
+
     return (
         <div className='max-w-screen-sm'>
             <Formik
@@ -67,7 +76,11 @@ export default function ContactForm() {
             >
                 {({ values, errors, touched, isSubmitting, submitCount }) => (
                     <>
-                        <Form className='flex flex-col gap-4'>
+                        <Form
+                            className='flex flex-col gap-4'
+                            onFocus={ensureRecaptchaLoaded}
+                            onMouseEnter={ensureRecaptchaLoaded}
+                        >
                             <FormField
                                 name='name'
                                 placeholder='John Doe'
@@ -104,7 +117,11 @@ export default function ContactForm() {
                                 submitCount={submitCount}
                             />
 
-                            <Recaptcha recaptchaRef={recaptchaRef} />
+                            {loadRecaptcha && (
+                                <Suspense fallback={null}>
+                                    <Recaptcha recaptchaRef={recaptchaRef} />
+                                </Suspense>
+                            )}
                             <RecaptchaMessage />
                             <Button type='submit' disabled={isSubmitting}>
                                 <>Submit</>
