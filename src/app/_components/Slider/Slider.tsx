@@ -10,13 +10,47 @@ interface CustomSliderProps {
 }
 
 const DEFAULT_SPEED = 2000;
-const DRAG_THRESHOLD = 50;
+const DEFAULT_SLIDE_TO_SHOW = 1;
+const DEFAULT_SLIDE_TO_SCROLL = 1;
+    const DRAG_THRESHOLD = 50;
+
+function debounce<T extends (...args: any[]) => any>(fn: T, delay: number): T {
+    let timeoutId: NodeJS.Timeout;
+    return ((...args: any[]) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => fn(...args), delay);
+    }) as T;
+}
 
 export function Slider({ settings, children }: CustomSliderProps) {
-    const mountedRef = useRef(true);
-    const [slidesToShowCount, setSlidesToShowCount] = useState(settings.slidesToShow || 1);
-    const [slidesToScrollCount, setSlidesToScrollCount] = useState(settings.slidesToScroll || 1);
-    const [currentSpeed, setCurrentSpeed] = useState(settings.speed ?? DEFAULT_SPEED);
+    const mountedRef = useRef(false);
+
+    // Lazy initialize responsive settings
+    const getInitialResponsiveSettings = useCallback(() => {
+        const sorted = settings.responsive
+            ?.slice()
+            .sort((a, b) => a.breakpoint - b.breakpoint);
+
+        const responsive = sorted?.find((item) => typeof window !== 'undefined' && window.innerWidth <= item.breakpoint);
+
+        if (responsive) {
+            return {
+                slidesToShow: responsive.settings.slidesToShow,
+                slidesToScroll: responsive.settings.slidesToScroll,
+                speed: responsive.settings.speed ?? settings.speed ?? DEFAULT_SPEED,
+            };
+        }
+
+        return {
+            slidesToShow: settings.slidesToShow || DEFAULT_SLIDE_TO_SHOW,
+            slidesToScroll: settings.slidesToScroll || DEFAULT_SLIDE_TO_SCROLL,
+            speed: settings.speed ?? DEFAULT_SPEED,
+        };
+    }, [settings.responsive, settings.slidesToShow, settings.slidesToScroll, settings.speed]);
+
+    const [slidesToShowCount, setSlidesToShowCount] = useState(() => getInitialResponsiveSettings().slidesToShow);
+    const [slidesToScrollCount, setSlidesToScrollCount] = useState(() => getInitialResponsiveSettings().slidesToScroll);
+    const [currentSpeed, setCurrentSpeed] = useState(() => getInitialResponsiveSettings().speed);
     const [isPaused, setIsPaused] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -24,6 +58,7 @@ export function Slider({ settings, children }: CustomSliderProps) {
     const [offset, setOffset] = useState<number>(() => bufferSize);
 
     useEffect(() => {
+        mountedRef.current = true;
         return () => { mountedRef.current = false; };
     }, []);
 
@@ -136,36 +171,12 @@ export function Slider({ settings, children }: CustomSliderProps) {
         }
     }, [getResponsiveSettings, settings.slidesToShow, settings.slidesToScroll, settings.speed]);
 
-    const debounce = useCallback((fn: Function, delay: number) => {
-        let timeoutId: NodeJS.Timeout;
-        return (...args: any[]) => {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => fn(...args), delay);
-        };
-    }, []);
-
-    const debouncedResize = useMemo(() => debounce(handleResize, 50), [debounce, handleResize]);
+    const debouncedResize = useMemo(() => debounce(handleResize, 50), [handleResize]);
 
     useEffect(() => {
         window.addEventListener('resize', debouncedResize);
         return () => window.removeEventListener('resize', debouncedResize);
     }, [debouncedResize]);
-
-
-    // TODO: fix initial state
-    useEffect(() => {
-        const responsive = getResponsiveSettings(window.innerWidth);
-
-        if (responsive) {
-            setSlidesToShowCount(responsive.settings.slidesToShow);
-            setSlidesToScrollCount(responsive.settings.slidesToScroll);
-            setCurrentSpeed(responsive.settings.speed ?? settings.speed ?? DEFAULT_SPEED);
-        } else {
-            setSlidesToShowCount(settings.slidesToShow || 1);
-            setSlidesToScrollCount(settings.slidesToScroll || 1);
-            setCurrentSpeed(settings.speed ?? DEFAULT_SPEED);
-        }
-    }, []);
 
     useEffect(() => {
         if (!settings.autoplay || isPaused) return;
