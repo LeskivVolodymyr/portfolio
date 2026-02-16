@@ -18,7 +18,7 @@ export default function Button({
     onMouseLeave,
     onclick,
 }: IButtonProps) {
-    const buttonClasses = `flex justify-center text-base font-bold px-5 py-4 rounded-full ${styles.button}`;
+    const buttonClasses = `flex justify-center text-base font-bold px-5 py-4 rounded-full cursor-pointer ${styles.button}`;
 
     return (
         <button

@@ -23,7 +23,7 @@ export default function SocialLink({
         <Link
             target='_blank'
             href={href}
-            className={`inline-flex p-4 rounded-full ${styles.link} ${isBordered ? '' : styles['no-border']}`}
+            className={`inline-flex cursor-pointer p-4 rounded-full ${styles.link} ${isBordered ? '' : styles['no-border']}`}
             title={title}
             onFocus={onFocus}
             onBlur={onBlur}
