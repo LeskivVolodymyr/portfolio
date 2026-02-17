@@ -15,7 +15,9 @@ import ContactForm from '@/app/_components/ContactForm/ContactForm';
 
 export default function LetsConnectSection() {
     const { iconInteractiveColor } = useIconColors();
-
+    const resumeFileId = process.env.NEXT_PUBLIC_RESUME_FILE_ID;
+    const resumeDownloadLink = `https://drive.google.com/uc?export=download&id=${resumeFileId}`;
+    const resumePreviewLink = `https://drive.google.com/file/d/${resumeFileId}/preview`;
     const linkedInSocialLinkProps: ILinkedInSocialLinkProps = {
         href: 'https://www.linkedin.com/in/leskiv-v-d/', // TODO: Move to config
         iconColor: iconInteractiveColor,
@@ -41,7 +43,7 @@ export default function LetsConnectSection() {
         <div className='flex flex-col flex-wrap  md:flex-row gap-2'>
             <div className='flex flex-col flex-1 mb-7'>
                 <h2 className='text-6xl mb-2'>LET’S CONNECT</h2>
-                <div className='mb-5 flex flex-col'>
+                <div className='mb-5 flex flex-col gap-4'>
                     <div>
                         Say hello at&nbsp;
                         <a
@@ -52,13 +54,23 @@ export default function LetsConnectSection() {
                         </a>
                     </div>
                     <div>
-                        For more info, here is my&nbsp;
+                        For more information, you can&nbsp;
                         <a
-                            href='/not-implemented'
+                            href={resumeDownloadLink}
                             className={`${styles.resume} underline underline-offset-4`}
+                            target="_blank" rel="noopener noreferrer"
                         >
-                            <strong>resume</strong>
+                            <strong>download my resume</strong>
                         </a>
+                        <br/>or&nbsp;
+                        <a
+                            href={resumePreviewLink}
+                            className={`${styles.resume} underline underline-offset-4`}
+                            target="_blank" rel="noopener noreferrer"
+                        >
+                            <b>view</b>
+                        </a>
+                        &nbsp;it in a new tab.
                     </div>
                 </div>
                 <div className='flex gap-4'>
